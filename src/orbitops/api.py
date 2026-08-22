@@ -1,7 +1,11 @@
 import requests
 from typing import List
+import math
+from . import propogation
+import time
 
 def get_sat_info_tle(catalog_number: int) -> List[str]:
+    """Returns the cartesian state of the spacecraft in TLE format."""
 
     returnArr = []
 
@@ -30,6 +34,111 @@ def get_sat_info_tle(catalog_number: int) -> List[str]:
         print(f"Failed to retrieve satellite data: {error}")
 
         return []
+
+def get_satcat_data(catalog_number: int) -> dict:
+    """Returns information about a given spacecraft."""
+
+    url = "https://celestrak.org/satcat/records.php"
+
+    params = {
+        "CATNR": catalog_number,
+        "FORMAT": "JSON"
+    }
+
+    response = requests.get(url, params=params)
+
+    data = response.json()[0]
+
+    return data
+
+def search_by_name(name: str) -> list[dict]:
+    """Searches Celestrack by name, returns most relevant results."""
+    url = "https://celestrak.org/satcat/records.php"
+
+    params = {
+        "NAME": name,
+        "FORMAT": "JSON",
+    }
+
+    response = requests.get(url, params=params)
+
+    response.raise_for_status()
+
+    return response.json()
+
+def get_distance_sats(catalog_num1: int, catalog_num2: int) -> int:
+    """Returns the 3D Euclidean distance between two spacecraft."""
+
+    returnArr = []
+    
+    url = "https://celestrak.org/NORAD/elements/gp.php"
+
+    params = {
+        "CATNR": catalog_num1,
+        "FORMAT": "TLE"
+    }
+
+    params2 = {
+        "CATNR": catalog_num2,
+        "FORMAT": "TLE"
+    }
+
+    try:
+    
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        
+        first_sat_data = response.text.splitlines()
+
+        tle_1_first_sat = first_sat_data[1]
+        tle_2_first_sat = first_sat_data[2]
+
+        teme_first_sat = propogation.get_teme_cartesian(tle_1_first_sat, tle_2_first_sat)[0]
+
+        response2 = requests.get(url, params=params2)
+        response2.raise_for_status()
+
+        second_sat_data = response2.text.splitlines()
+
+        tle_1_second_sat = second_sat_data[1]
+        tle_2_second_sat = second_sat_data[2]
+
+        teme_second_sat = propogation.get_teme_cartesian(tle_1_second_sat, tle_2_second_sat)[0]
+
+        print(f"The distance between {first_sat_data[0].strip()} and {second_sat_data[0].strip()} is {math.dist(teme_first_sat, teme_second_sat):.3f}km.")
+
+    except requests.RequestException as error:
+
+        print(f"Failed to retrieve satellite data: {error}")
+
+        return []
+
+def watch(catalog_number: int) -> None:
+    """Returns the latitude, longitude, and altitude of a spacecraft."""
+    sat_name, tle_line1, tle_line2 = get_sat_info_tle(catalog_number)
+
+    while True:
+        latitude, longitude, altitude = (
+            propogation.get_geographic_position(
+                tle_line1,
+                tle_line2,
+            )
+        )
+
+        print(f"\r{sat_name} | "
+              f"Lat: {latitude:.4f}° | "
+              f"Lon: {longitude:.4f}° | "
+              f"Alt: {altitude:.2f} km",
+              end="",
+              flush=True)
+
+        time.sleep(1)
+
+
+
+
+
+
 
 
 

@@ -8,6 +8,8 @@ dependencies = [
     "pydantic>=2.13.4",
     "requests>=2.34.2",
     "rich>=15.0.0",
+    "sgp4>=2.27",
+    "skyfield>=1.55",
     "typer>=0.27.1",
     "typing>=3.10.0.0",
 ]
