@@ -1,7 +1,8 @@
-from sgp4.api import Satrec
-from sgp4.api import jday
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
+from sgp4.api import Satrec, jday
 from skyfield.api import EarthSatellite, load, wgs84
+
 
 def get_teme_cartesian(tle_line_1: str, tle_line_2: str) -> tuple[
     tuple[float, float, float],
@@ -10,7 +11,7 @@ def get_teme_cartesian(tle_line_1: str, tle_line_2: str) -> tuple[
 
     satellite = Satrec.twoline2rv(tle_line_1, tle_line_2)
     
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     jd, fr = jday(
     now.year,

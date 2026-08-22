@@ -1,3 +1,29 @@
+# Virtual environments
 .venv/
+
+# Python cache
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Testing / linting
+.pytest_cache/
+.ruff_cache/
+
+# Type checking
+.pyright/
+.mypy_cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Coverage
+.coverage
+htmlcov/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
