@@ -2,6 +2,10 @@ import sys
 
 from . import api, etc, propagation
 
+from rich.console import Console
+
+console = Console()
+
 VALID_COMMANDS = (
     "help",
     "--help",
@@ -33,43 +37,43 @@ def main() -> None:
 
         # Invalid command
         if command not in VALID_COMMANDS:
-            print(f"Invalid command: {command}")
-            print("Use 'orbitops help' to view available commands.")
+            console.print(f"[bold red]Invalid command: {command}[/bold red]")
+            console.print("[dim yellow]Use 'orbitops help' to view available commands.[/dim yellow]")
             return
 
         # Search requires a name
         if command == "search" and len(sys.argv) < 3:
-            print("Missing satellite name.")
-            print("Usage: orbitops search <name>")
+            console.print("[bold red]Missing satellite name.[/bold red]")
+            console.print("[dim yellow]Usage: orbitops search <name>[/dim yellow]")
             return
 
         # Distance requires two catalog numbers
         if command == "distance" and len(sys.argv) < 4:
-            print("Two satellite catalog numbers are required.")
-            print("Usage: orbitops distance <CATNR1> <CATNR2>")
+            console.print("[bold red]Two satellite catalog numbers are required.[/bold red]")
+            console.print("[dim yellow]Usage: orbitops distance <CATNR1> <CATNR2>[/dim yellow]")
             return
 
         # All remaining commands require one catalog number
         if command not in ("search", "distance"):
 
             if len(sys.argv) < 3:
-                print("Missing satellite catalog number.")
-                print(f"Usage: orbitops {command} <CATNR>")
+                console.print("[bold red]Missing satellite catalog number.[/bold red]")
+                console.print(f"[dim yellow]Usage: orbitops {command} <CATNR>[/dim yellow]")
                 return
 
             try:
                 catalog_number = int(sys.argv[2])
 
             except ValueError:
-                print("Satellite catalog number must be an integer.")
+                console.print("[bold red]Satellite catalog number must be an integer.[/bold red]")
                 return
 
             sat_data = api.get_sat_info_tle(catalog_number)
 
             if not sat_data:
-                print(
-                    f"No satellite found with catalog number "
-                    f"{catalog_number}."
+                console.print(
+                    f"[dim yellow]No satellite found with catalog number "
+                    f"{catalog_number}. [/dim yellow]"
                 )
                 return
 
@@ -116,9 +120,9 @@ def main() -> None:
             data = api.get_satcat_data(catalog_number)
 
             if not data:
-                print(
-                    f"No satellite catalog information found for "
-                    f"{catalog_number}."
+                console.print(
+                    f"[dim yellow]No satellite found with catalog number "
+                    f"{catalog_number}. [/dim yellow]"
                 )
                 return
 
@@ -130,9 +134,9 @@ def main() -> None:
             results = api.search_by_name(sys.argv[2])
 
             if not results:
-                print(
-                    f"No satellites found matching "
-                    f"'{sys.argv[2]}'."
+                console.print(
+                    f"[dim yellow]No satellites found matching "
+                    f"'{sys.argv[2]}'.[/dim yellow]"
                 )
                 return
 
@@ -148,7 +152,7 @@ def main() -> None:
                 catalog_number_2 = int(sys.argv[3])
 
             except ValueError:
-                print("Satellite catalog numbers must be integers.")
+                console.print("[bold red]Satellite catalog numbers must be integers.[/bold red]")
                 return
 
             api.get_distance_sats(
@@ -161,13 +165,13 @@ def main() -> None:
             api.watch(catalog_number)
 
     except IndexError as error:
-        print(f"Invalid satellite catalog number (CATNR): {error}")
+        console.print(f"[bold red]Invalid satellite catalog number (CATNR): {error}[/bold red]")
 
     except KeyboardInterrupt:
-        print("\nOrbitOps stopped.")
+        console.print("[dim yellow]\nOrbitOps stopped.[/dim yellow]")
 
     except Exception as error:
-        print(f"OrbitOps error: {error}")
+        console.print(f"[bold red]OrbitOps error: {error}[/bold red]")
 
 
 if __name__ == "__main__":

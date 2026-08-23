@@ -1,6 +1,10 @@
+from rich.console import Console
+
+console = Console()
+
 def print_help_menu() -> None:
 
-    print("=== OrbitOps Help Menu ===")
+    console.print("[bold cyan]=== OrbitOps Help Menu ===[/bold cyan]\n")
     print("position <CATNR>          Show current latitude, longitude, and altitude")
     print("teme <CATNR>              Show current TEME position and velocity")
     print("info <CATNR>              Show satellite catalog information")

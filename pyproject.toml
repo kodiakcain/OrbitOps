@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "requests>=2.34.2",
+    "rich>=15.0.0",
     "sgp4>=2.27",
     "skyfield>=1.55",
 ]

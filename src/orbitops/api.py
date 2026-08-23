@@ -5,9 +5,13 @@ import requests
 
 from . import propagation
 
+from rich.console import Console
+
+console = Console()
+
 
 def get_sat_info_tle(catalog_number: int) -> list[str]:
-    """Returns the cartesian state of the spacecraft in TLE format."""
+    """Returns the satellite name and data in TLE format."""
 
     returnArr = []
 
@@ -19,8 +23,11 @@ def get_sat_info_tle(catalog_number: int) -> list[str]:
     }
 
     try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()
+
+        with console.status("[bold green]Fetching satellite data..."):
+
+            response = requests.get(url, params=params, timeout=10,)
+            response.raise_for_status()
 
         data = response.text.splitlines()
 
@@ -33,7 +40,7 @@ def get_sat_info_tle(catalog_number: int) -> list[str]:
         return returnArr
 
     except requests.RequestException as error:
-        print(f"Failed to retrieve satellite data: {error}")
+        console.print(f"[bold red]Failed to retrieve satellite data: {error}[/bold red]")
 
         return []
 
@@ -49,7 +56,7 @@ def get_satcat_data(catalog_number: int) -> dict:
     }
 
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=10,)
         response.raise_for_status()
 
         data = response.json()
@@ -60,7 +67,7 @@ def get_satcat_data(catalog_number: int) -> dict:
         return data[0]
 
     except requests.RequestException as error:
-        print(f"Failed to retrieve satellite data: {error}")
+        console.print(f"[bold red]Failed to retrieve satellite data: {error}[/bold red]")
 
         return {}
 
@@ -76,13 +83,15 @@ def search_by_name(name: str) -> list[dict]:
     }
 
     try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()
+
+        with console.status(f"[bold green]Searching for {name}..."):
+            response = requests.get(url, params=params, timeout=10,)
+            response.raise_for_status()
 
         return response.json()
 
     except requests.RequestException as error:
-        print(f"Failed to retrieve satellite data: {error}")
+        console.print(f"[bold red]Failed to retrieve satellite data: {error}[/bold red]")
 
         return []
 
@@ -103,15 +112,15 @@ def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
     }
 
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=10,)
         response.raise_for_status()
 
         first_sat_data = response.text.splitlines()
 
         if len(first_sat_data) < 3:
-            print(
-                f"No valid TLE found for catalog number "
-                f"{catalog_num1}."
+            console.print(
+                f"[bold red]No valid TLE found for catalog number "
+                f"{catalog_num1}.[/bold red]"
             )
             return
 
@@ -123,15 +132,15 @@ def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
             tle_2_first_sat
         )[0]
 
-        response2 = requests.get(url, params=params2)
+        response2 = requests.get(url, params=params2, timeout=10,)
         response2.raise_for_status()
 
         second_sat_data = response2.text.splitlines()
 
         if len(second_sat_data) < 3:
-            print(
-                f"No valid TLE found for catalog number "
-                f"{catalog_num2}."
+            console.print(
+                f"[bold red]No valid TLE found for catalog number "
+                f"{catalog_num2}.[/bold red]"
             )
             return
 
@@ -151,7 +160,7 @@ def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
         )
 
     except requests.RequestException as error:
-        print(f"Failed to retrieve satellite data: {error}")
+        console.print(f"[bold red]Failed to retrieve satellite data: {error}[/bold red]")
 
 
 def watch(catalog_number: int) -> None:
@@ -160,15 +169,15 @@ def watch(catalog_number: int) -> None:
     sat_data = get_sat_info_tle(catalog_number)
 
     if len(sat_data) < 3:
-        print(
-            f"No valid TLE found for catalog number "
-            f"{catalog_number}."
+        console.print(
+            f"[bold red]No valid TLE found for catalog number "
+            f"{catalog_number}.[/bold red]"
         )
         return
 
     sat_name, tle_line1, tle_line2 = sat_data
 
-    print("Press 'Ctrl+C' to stop watching.")
+    console.print("[dim yellow]Press 'Ctrl+C' to stop watching.[/dim yellow]")
 
     while True:
         latitude, longitude, altitude = (
