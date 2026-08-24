@@ -20,6 +20,8 @@ It uses Two-Line Element (TLE) data and the SGP4 propagation model to calculate 
 
 - Generate predicted satellite ground tracks on a Mercator projection
 
+- Export predicted ground-track data to CSV
+
 ## Installation
 
 OrbitOps requires **Python 3.14 or later**.
@@ -54,13 +56,10 @@ Example:
 
 ```text
 Geographic position of ISS (ZARYA)
-
 --------------------
 
 Latitude:  -32.7625°
-
 Longitude: -54.1085°
-
 Altitude:  432.53 km
 ```
 
@@ -140,6 +139,38 @@ The ground track is displayed on a Mercator projection and includes predicted sp
 
 The visualization includes orbital revolution coloring, UTC reference times, starting and ending positions, orbital period information, sampling information, and the TLE epoch used for propagation.
 
+Ground tracks can be generated for durations from 1 to 1440 minutes.
+
+#### CSV Export
+
+Add the optional `--csv` flag to export the predicted ground-track data to a CSV file:
+
+```bash
+orbitops gtrack 25544 180 --csv
+```
+
+OrbitOps will prompt you to choose where the CSV file should be saved.
+
+The exported CSV contains one row for each propagated ground-track sample with the following fields:
+
+```text
+timestamp_utc
+latitude_deg
+longitude_deg
+altitude_km
+```
+
+Example:
+
+```csv
+timestamp_utc,latitude_deg,longitude_deg,altitude_km
+2026-08-24T23:05:37Z,43.933809,49.375321,417.172
+2026-08-24T23:06:37Z,45.822370,53.903829,417.493
+2026-08-24T23:07:37Z,47.497425,58.746589,417.794
+```
+
+The CSV data is generated from the same propagated positions used to create the ground-track visualization.
+
 ## Command Reference
 
 | Command | Usage | Description |
@@ -150,7 +181,7 @@ The visualization includes orbital revolution coloring, UTC reference times, sta
 | `search` | `orbitops search <name>` | Search satellites by name |
 | `distance` | `orbitops distance <CATNR1> <CATNR2>` | Calculate 3D spacecraft separation |
 | `watch` | `orbitops watch <CATNR>` | Continuously monitor spacecraft position |
-| `gtrack` | `orbitops gtrack <CATNR> <MINUTES>` | Generate a predicted satellite ground track |
+| `gtrack` | `orbitops gtrack <CATNR> <MINUTES> [--csv]` | Generate a predicted ground track with optional CSV export |
 | `help` | `orbitops help` | Display the help menu |
 
 ## How It Works
@@ -161,29 +192,17 @@ For position calculations, OrbitOps retrieves a spacecraft's TLE and uses SGP4 t
 
 ```text
 CelesTrak
-
     |
-
     | TLE
-
     v
-
 OrbitOps
-
     |
-
     | SGP4
-
     v
-
 Calculated spacecraft state
-
     |
-
     +--> TEME position and velocity
-
     |
-
     +--> Latitude / Longitude / Altitude
 ```
 

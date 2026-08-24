@@ -163,8 +163,22 @@ def main() -> None:
         if command == "watch":
             api.watch(catalog_number)
 
+        if command == "gtrack" and len(sys.argv) < 4:
+            console.print(
+                "[bold red]Catalog number and duration are required.[/bold red]"
+            )
+            console.print(
+                "[dim yellow]Usage: orbitops gtrack <CATNR> <MINUTES>[/dim yellow]"
+            )
+            return
+        
         if command == "gtrack":
-            minutes = int(sys.argv[3])
+
+            try:
+                minutes = int(sys.argv[3])
+            except ValueError:
+                console.print("[bold red]Ground-track duration must be an integer in range 1-1440.[/bold red]")
+                return
 
             start_time = datetime.now(UTC)
 
@@ -182,6 +196,10 @@ def main() -> None:
                 tle_line1,
                 tle_line2,
             )
+
+            if len(sys.argv) > 4 and sys.argv[4] == "--csv":
+
+                etc.save_ground_track_csv(ground_track, f"{sat_name.strip()}-{datetime.now():%Y-%m-%d-%H-%M}.csv")
 
     except IndexError as error:
         console.print(

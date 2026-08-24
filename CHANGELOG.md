@@ -2,6 +2,26 @@
 
 All notable changes to OrbitOps will be documented in this file.
 
+## [0.2.1] - 2026-08-24
+
+### Added
+
+- Added optional CSV export for predicted satellite ground tracks.
+
+- Added `--csv` option to the `gtrack` command.
+
+- Added a save dialog for selecting the location of exported ground-track CSV files.
+
+- Added UTC timestamps, latitude, longitude, and altitude data to ground-track CSV exports.
+
+### Changed
+
+- Updated the OrbitOps help menu to document the optional `--csv` ground-track export.
+
+- Updated `gtrack` command usage to `orbitops gtrack <CATNR> <MINUTES> [--csv]`.
+
+- Improved ground-track argument validation and error handling.
+
 ## [0.2.0] - 2026-08-23
 
 ### Added
