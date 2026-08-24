@@ -7,11 +7,18 @@ It uses Two-Line Element (TLE) data and the SGP4 propagation model to calculate 
 ## Features
 
 - Calculate current latitude, longitude, and altitude
+
 - Display TEME Cartesian position and velocity
+
 - View satellite catalog information
+
 - Search satellites by name
+
 - Calculate 3D distance between two spacecraft
+
 - Continuously monitor a spacecraft's calculated position
+
+- Generate predicted satellite ground tracks on a Mercator projection
 
 ## Installation
 
@@ -47,9 +54,13 @@ Example:
 
 ```text
 Geographic position of ISS (ZARYA)
+
 --------------------
+
 Latitude:  -32.7625°
+
 Longitude: -54.1085°
+
 Altitude:  432.53 km
 ```
 
@@ -117,6 +128,18 @@ ISS (ZARYA) | Lat: 38.2841° | Lon: -72.1832° | Alt: 421.72 km
 
 Press `Ctrl+C` to stop.
 
+### Ground Track
+
+Generate a predicted ground-track visualization for a spacecraft over a specified number of minutes.
+
+```bash
+orbitops gtrack 25544 180
+```
+
+The ground track is displayed on a Mercator projection and includes predicted spacecraft positions over the requested time period.
+
+The visualization includes orbital revolution coloring, UTC reference times, starting and ending positions, orbital period information, sampling information, and the TLE epoch used for propagation.
+
 ## Command Reference
 
 | Command | Usage | Description |
@@ -127,6 +150,7 @@ Press `Ctrl+C` to stop.
 | `search` | `orbitops search <name>` | Search satellites by name |
 | `distance` | `orbitops distance <CATNR1> <CATNR2>` | Calculate 3D spacecraft separation |
 | `watch` | `orbitops watch <CATNR>` | Continuously monitor spacecraft position |
+| `gtrack` | `orbitops gtrack <CATNR> <MINUTES>` | Generate a predicted satellite ground track |
 | `help` | `orbitops help` | Display the help menu |
 
 ## How It Works
@@ -137,17 +161,29 @@ For position calculations, OrbitOps retrieves a spacecraft's TLE and uses SGP4 t
 
 ```text
 CelesTrak
+
     |
+
     | TLE
+
     v
+
 OrbitOps
+
     |
+
     | SGP4
+
     v
+
 Calculated spacecraft state
+
     |
+
     +--> TEME position and velocity
+
     |
+
     +--> Latitude / Longitude / Altitude
 ```
 
@@ -162,9 +198,13 @@ Positions are calculated from publicly available orbital elements using SGP4. Th
 Accuracy can be affected by factors including:
 
 - Age of the orbital elements
+
 - Atmospheric drag
+
 - Spacecraft maneuvers
+
 - Spacecraft orbit
+
 - Time elapsed from the TLE epoch
 
 OrbitOps is intended for educational, informational, satellite-tracking, visualization, and general orbital-analysis purposes.
@@ -175,6 +215,7 @@ Clone the repository:
 
 ```bash
 git clone <repository-url>
+
 cd OrbitOps
 ```
 
@@ -188,14 +229,6 @@ Run OrbitOps:
 
 ```bash
 uv run orbitops position 25544
-```
-
-Run tests and checks:
-
-```bash
-uv run pytest
-uv run ruff check .
-uv run pyright
 ```
 
 ## License

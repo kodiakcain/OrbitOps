@@ -2,10 +2,9 @@ import math
 import time
 
 import requests
+from rich.console import Console
 
 from . import propagation
-
-from rich.console import Console
 
 console = Console()
 
@@ -17,16 +16,15 @@ def get_sat_info_tle(catalog_number: int) -> list[str]:
 
     url = "https://celestrak.org/NORAD/elements/gp.php"
 
-    params = {
-        "CATNR": catalog_number,
-        "FORMAT": "TLE"
-    }
+    params = {"CATNR": catalog_number, "FORMAT": "TLE"}
 
     try:
-
         with console.status("[bold green]Fetching satellite data..."):
-
-            response = requests.get(url, params=params, timeout=10,)
+            response = requests.get(
+                url,
+                params=params,
+                timeout=20,
+            )
             response.raise_for_status()
 
         data = response.text.splitlines()
@@ -40,7 +38,9 @@ def get_sat_info_tle(catalog_number: int) -> list[str]:
         return returnArr
 
     except requests.RequestException as error:
-        console.print(f"[bold red]Failed to retrieve satellite data: {error}[/bold red]")
+        console.print(
+            f"[bold red]Failed to retrieve satellite data: {error}[/bold red]"
+        )
 
         return []
 
@@ -50,13 +50,14 @@ def get_satcat_data(catalog_number: int) -> dict:
 
     url = "https://celestrak.org/satcat/records.php"
 
-    params = {
-        "CATNR": catalog_number,
-        "FORMAT": "JSON"
-    }
+    params = {"CATNR": catalog_number, "FORMAT": "JSON"}
 
     try:
-        response = requests.get(url, params=params, timeout=10,)
+        response = requests.get(
+            url,
+            params=params,
+            timeout=20,
+        )
         response.raise_for_status()
 
         data = response.json()
@@ -67,7 +68,9 @@ def get_satcat_data(catalog_number: int) -> dict:
         return data[0]
 
     except requests.RequestException as error:
-        console.print(f"[bold red]Failed to retrieve satellite data: {error}[/bold red]")
+        console.print(
+            f"[bold red]Failed to retrieve satellite data: {error}[/bold red]"
+        )
 
         return {}
 
@@ -83,15 +86,20 @@ def search_by_name(name: str) -> list[dict]:
     }
 
     try:
-
         with console.status(f"[bold green]Searching for {name}..."):
-            response = requests.get(url, params=params, timeout=10,)
+            response = requests.get(
+                url,
+                params=params,
+                timeout=20,
+            )
             response.raise_for_status()
 
         return response.json()
 
     except requests.RequestException as error:
-        console.print(f"[bold red]Failed to retrieve satellite data: {error}[/bold red]")
+        console.print(
+            f"[bold red]Failed to retrieve satellite data: {error}[/bold red]"
+        )
 
         return []
 
@@ -101,18 +109,16 @@ def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
 
     url = "https://celestrak.org/NORAD/elements/gp.php"
 
-    params = {
-        "CATNR": catalog_num1,
-        "FORMAT": "TLE"
-    }
+    params = {"CATNR": catalog_num1, "FORMAT": "TLE"}
 
-    params2 = {
-        "CATNR": catalog_num2,
-        "FORMAT": "TLE"
-    }
+    params2 = {"CATNR": catalog_num2, "FORMAT": "TLE"}
 
     try:
-        response = requests.get(url, params=params, timeout=10,)
+        response = requests.get(
+            url,
+            params=params,
+            timeout=20,
+        )
         response.raise_for_status()
 
         first_sat_data = response.text.splitlines()
@@ -128,11 +134,14 @@ def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
         tle_2_first_sat = first_sat_data[2]
 
         teme_first_sat = propagation.get_teme_cartesian(
-            tle_1_first_sat,
-            tle_2_first_sat
+            tle_1_first_sat, tle_2_first_sat
         )[0]
 
-        response2 = requests.get(url, params=params2, timeout=10,)
+        response2 = requests.get(
+            url,
+            params=params2,
+            timeout=20,
+        )
         response2.raise_for_status()
 
         second_sat_data = response2.text.splitlines()
@@ -148,8 +157,7 @@ def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
         tle_2_second_sat = second_sat_data[2]
 
         teme_second_sat = propagation.get_teme_cartesian(
-            tle_1_second_sat,
-            tle_2_second_sat
+            tle_1_second_sat, tle_2_second_sat
         )[0]
 
         print(
@@ -160,7 +168,9 @@ def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
         )
 
     except requests.RequestException as error:
-        console.print(f"[bold red]Failed to retrieve satellite data: {error}[/bold red]")
+        console.print(
+            f"[bold red]Failed to retrieve satellite data: {error}[/bold red]"
+        )
 
 
 def watch(catalog_number: int) -> None:
@@ -180,11 +190,9 @@ def watch(catalog_number: int) -> None:
     console.print("[dim yellow]Press 'Ctrl+C' to stop watching.[/dim yellow]")
 
     while True:
-        latitude, longitude, altitude = (
-            propagation.get_geographic_position(
-                tle_line1,
-                tle_line2,
-            )
+        latitude, longitude, altitude = propagation.get_geographic_position(
+            tle_line1,
+            tle_line2,
         )
 
         print(
@@ -193,7 +201,7 @@ def watch(catalog_number: int) -> None:
             f"Lon: {longitude:.4f}° | "
             f"Alt: {altitude:.2f} km",
             end="",
-            flush=True
+            flush=True,
         )
 
         time.sleep(1)
