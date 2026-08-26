@@ -79,7 +79,7 @@ def main() -> None:
                 )
                 return
 
-            sat_data = api.get_sat_info_tle(catalog_number)
+            sat_data = api.get_sat_info_omm(catalog_number)
 
             if not sat_data:
                 console.print(
@@ -88,10 +88,13 @@ def main() -> None:
                 )
                 return
 
-            sat_name, tle_line1, tle_line2 = sat_data
+            sat_name = (
+                sat_data.get("OBJECT_NAME")
+                or str(catalog_number)
+            )
 
         if command == "teme":
-            position, velocity = propagation.get_teme_cartesian(tle_line1, tle_line2)
+            position, velocity = propagation.get_teme_cartesian(sat_data)
 
             print(f"\nTEME Cartesian State of {sat_name}")
             print("--------------------")
@@ -111,8 +114,7 @@ def main() -> None:
             print("--------------------")
 
             latitude, longitude, altitude = propagation.get_geographic_position(
-                tle_line1,
-                tle_line2,
+                sat_data,
             )
 
             print(f"Latitude:  {latitude:.4f}°")
@@ -187,14 +189,13 @@ def main() -> None:
             for minute in range(minutes + 1):
                 times.append(start_time + timedelta(minutes=minute))
 
-            ground_track = etc.generate_ground_track(tle_line1, tle_line2, times)
+            ground_track = etc.generate_ground_track(sat_data, times)
 
             etc.plot_ground_track(
                 ground_track,
                 sat_name,
                 minutes,
-                tle_line1,
-                tle_line2,
+                sat_data,
             )
 
             if len(sys.argv) > 4 and sys.argv[4] == "--csv":

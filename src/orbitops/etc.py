@@ -22,14 +22,13 @@ def print_help_menu() -> None:
     print("gtrack <CATNR> <minutes> [--csv]           Plot a ground track of the satellite; optionally export CSV")
     print("help                      Show this help menu")
 
-def generate_ground_track(tle1: str, tle2: str, times: list) -> list[tuple]:
+def generate_ground_track(omm_data: dict, times: list) -> list[tuple]:
     """Generate the grond track and return it."""
     timescale = load.timescale()
 
-    satellite = EarthSatellite(
-        tle1,
-        tle2,
-        ts=timescale,
+    satellite = EarthSatellite.from_omm(
+        timescale,
+        omm_data,
     )
 
     ground_track = []
@@ -52,7 +51,7 @@ def generate_ground_track(tle1: str, tle2: str, times: list) -> list[tuple]:
 
     return ground_track
 
-def plot_ground_track( ground_track: list[tuple], sat_name: str, minutes: int, tle1: str, tle2: str,) -> None:
+def plot_ground_track( ground_track: list[tuple], sat_name: str, minutes: int, omm_data: dict,) -> None:
     """Plots a satellite ground track on a Mercator projection."""
 
     with console.status("[bold green]Creating ground track..."):
@@ -73,8 +72,11 @@ def plot_ground_track( ground_track: list[tuple], sat_name: str, minutes: int, t
         # Create the satellite so we can determine orbital information.
         timescale = load.timescale()
 
-        # Create Skyfield satellite object using spacecraft TLE
-        satellite = EarthSatellite(tle1, tle2, ts=timescale,)
+        # Create Skyfield satellite object using spacecraft OMM data
+        satellite = EarthSatellite.from_omm(
+            timescale,
+            omm_data,
+        )
 
         # time = total angle / angular speed, using radians
         orbital_period_minutes = (2 * math.pi / satellite.model.no_kozai)

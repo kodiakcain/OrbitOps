@@ -1,14 +1,20 @@
 from datetime import UTC, datetime, timedelta
 
+from sgp4 import omm
 from sgp4.api import Satrec, jday
 from skyfield.api import EarthSatellite, load, wgs84
 
 
 def get_teme_cartesian(
-    tle_line_1: str, tle_line_2: str
+    omm_data: dict,
 ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
 
-    satellite = Satrec.twoline2rv(tle_line_1, tle_line_2)
+    satellite = Satrec()
+
+    omm.initialize(
+        satellite,
+        omm_data,
+    )
 
     now = datetime.now(UTC)
 
@@ -27,17 +33,15 @@ def get_teme_cartesian(
 
 
 def get_geographic_position(
-    tle_line_1: str,
-    tle_line_2: str,
+    omm_data: dict,
 ) -> tuple[float, float, float]:
 
     timescale = load.timescale()
     current_time = timescale.now()
 
-    satellite = EarthSatellite(
-        tle_line_1,
-        tle_line_2,
-        ts=timescale,
+    satellite = EarthSatellite.from_omm(
+        timescale,
+        omm_data,
     )
 
     position = satellite.at(current_time)
@@ -51,10 +55,19 @@ def get_geographic_position(
     return latitude, longitude, altitude
 
 
-def propogate_future(tle1: str, tle2: str, minutes: int, step_seconds: int = 60):
+def propogate_future(
+    omm_data: dict,
+    minutes: int,
+    step_seconds: int = 60
+):
     """Returns timestamped future location data of a given spacecraft"""
 
-    satellite = Satrec.twoline2rv(tle1, tle2)
+    satellite = Satrec()
+
+    omm.initialize(
+        satellite,
+        omm_data,
+    )
 
     start_time = datetime.now(UTC)
 
