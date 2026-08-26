@@ -2,7 +2,7 @@
 
 OrbitOps is a Python command-line toolkit for satellite tracking and basic orbital analysis using publicly available CelesTrak data.
 
-It uses Two-Line Element (TLE) data and the SGP4 propagation model to calculate spacecraft positions, velocities, and distances.
+It uses CelesTrak General Perturbations (GP) orbital data in Orbit Mean-Elements Message (OMM) JSON format and the SGP4 propagation model to calculate spacecraft positions, velocities, and distances.
 
 ## Features
 
@@ -21,6 +21,10 @@ It uses Two-Line Element (TLE) data and the SGP4 propagation model to calculate 
 - Generate predicted satellite ground tracks on a Mercator projection
 
 - Export predicted ground-track data to CSV
+
+- Support modern CelesTrak GP data using OMM JSON
+
+- Support NORAD catalog numbers beyond the legacy 5-digit TLE limit
 
 ## Installation
 
@@ -44,6 +48,8 @@ OrbitOps uses NORAD Catalog Numbers to identify spacecraft.
 
 For example, the International Space Station (ISS) has catalog number `25544`.
 
+OrbitOps uses CelesTrak GP data in OMM JSON format, allowing it to work with both traditional 5-digit catalog numbers and newer catalog numbers that cannot be represented using the legacy TLE format.
+
 ### Position
 
 Show the calculated latitude, longitude, and altitude of a spacecraft.
@@ -57,7 +63,6 @@ Example:
 ```text
 Geographic position of ISS (ZARYA)
 --------------------
-
 Latitude:  -32.7625°
 Longitude: -54.1085°
 Altitude:  432.53 km
@@ -137,7 +142,7 @@ orbitops gtrack 25544 180
 
 The ground track is displayed on a Mercator projection and includes predicted spacecraft positions over the requested time period.
 
-The visualization includes orbital revolution coloring, UTC reference times, starting and ending positions, orbital period information, sampling information, and the TLE epoch used for propagation.
+The visualization includes orbital revolution coloring, UTC reference times, starting and ending positions, orbital period information, sampling information, and the orbital-element epoch used for propagation.
 
 Ground tracks can be generated for durations from 1 to 1440 minutes.
 
@@ -186,14 +191,14 @@ The CSV data is generated from the same propagated positions used to create the 
 
 ## How It Works
 
-OrbitOps retrieves publicly available orbital data from CelesTrak.
+OrbitOps retrieves publicly available General Perturbations (GP) orbital data from CelesTrak in OMM JSON format.
 
-For position calculations, OrbitOps retrieves a spacecraft's TLE and uses SGP4 to propagate its orbit to the current time.
+For position calculations, OrbitOps retrieves a spacecraft's orbital elements and uses SGP4 to propagate its orbit to the requested time.
 
 ```text
 CelesTrak
     |
-    | TLE
+    | GP / OMM JSON
     v
 OrbitOps
     |
@@ -206,13 +211,15 @@ Calculated spacecraft state
     +--> Latitude / Longitude / Altitude
 ```
 
-For continuous tracking, the TLE does not need to be downloaded every second. OrbitOps retrieves the orbital elements and performs subsequent propagation locally.
+OrbitOps uses the OMM fields provided by CelesTrak to initialize the SGP4 propagation model. This avoids reliance on the legacy fixed-width TLE representation and allows OrbitOps to support newer NORAD catalog numbers beyond the traditional 5-digit TLE limit.
+
+For continuous tracking, the orbital data does not need to be downloaded every second. OrbitOps retrieves the orbital elements and performs subsequent propagation locally.
 
 ## Data and Accuracy
 
 OrbitOps does **not** receive live spacecraft telemetry.
 
-Positions are calculated from publicly available orbital elements using SGP4. They should therefore be treated as **calculated or predicted positions**, not authoritative spacecraft positions.
+Positions are calculated from publicly available CelesTrak GP orbital elements using SGP4. They should therefore be treated as **calculated or predicted positions**, not authoritative spacecraft positions.
 
 Accuracy can be affected by factors including:
 
@@ -224,7 +231,7 @@ Accuracy can be affected by factors including:
 
 - Spacecraft orbit
 
-- Time elapsed from the TLE epoch
+- Time elapsed from the orbital-element epoch
 
 OrbitOps is intended for educational, informational, satellite-tracking, visualization, and general orbital-analysis purposes.
 

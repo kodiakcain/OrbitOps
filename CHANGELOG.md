@@ -2,6 +2,20 @@
 
 All notable changes to OrbitOps will be documented in this file.
 
+## [0.2.2] - 2026-08-25
+
+### Changed
+
+- Refactored orbital data retrieval to use CelesTrak GP/OMM JSON data.
+
+- Updated SGP4 and Skyfield propagation to initialize from OMM data.
+
+- Updated position, TEME, distance, watch, and ground-track features to use OMM-based orbital data.
+
+### Added
+
+- Added support for newer 6-digit NORAD catalog numbers that cannot be represented in legacy TLE format.
+
 ## [0.2.1] - 2026-08-24
 
 ### Added
