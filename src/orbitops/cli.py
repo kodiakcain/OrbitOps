@@ -18,7 +18,8 @@ VALID_COMMANDS = (
     "distance",
     "watch",
     "gtrack",
-    "cache"
+    "cache",
+    "tests"
 )
 
 
@@ -36,6 +37,11 @@ def main() -> None:
         # Help command
         if command in ("help", "--help", "-h"):
             etc.print_help_menu()
+            return
+
+        if command == "tests":
+
+            etc.run_pytest_tests()
             return
 
         # Caching command

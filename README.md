@@ -16,6 +16,7 @@ It uses CelesTrak General Perturbations (GP) orbital data in Orbit Mean-Elements
 - Export predicted ground-track data to CSV
 - Cache CelesTrak OMM data locally to reduce repeated requests
 - Inspect and clear cached orbital data
+- Run the OrbitOps test suite from the command line
 - Support modern CelesTrak GP data using OMM JSON
 - Support NORAD catalog numbers beyond the legacy 5-digit TLE limit
 
@@ -199,6 +200,18 @@ orbitops cache clear
 
 Cached orbital elements are still propagated locally to the current or requested time, so using cached data does not cause spacecraft positions to remain static.
 
+### Test Suite
+
+Run the OrbitOps automated test suite:
+
+```bash
+orbitops test
+```
+
+The test suite verifies behavior across OrbitOps components, including API handling, caching, command-line behavior, orbital propagation utilities, ground-track generation, data validation, and error handling.
+
+The test command is primarily intended for development and verification. Running the test suite requires the OrbitOps development dependencies, including `pytest`.
+
 ## Command Reference
 
 | Command | Usage | Description |
@@ -212,6 +225,7 @@ Cached orbital elements are still propagated locally to the current or requested
 | `gtrack` | `orbitops gtrack <CATNR> <MINUTES> [--csv]` | Generate a predicted ground track with optional CSV export |
 | `cache info` | `orbitops cache info [CATNR]` | View cached orbital data |
 | `cache clear` | `orbitops cache clear [CATNR]` | Clear cached orbital data |
+| `test` | `orbitops test` | Run the OrbitOps test suite |
 | `help` | `orbitops help` | Display the help menu |
 
 ## How It Works
@@ -258,12 +272,41 @@ Accuracy can be affected by factors including:
 
 OrbitOps is intended for educational, informational, satellite-tracking, visualization, and general orbital-analysis purposes.
 
+## Testing
+
+OrbitOps includes an automated pytest test suite covering the major components of the application.
+
+From the development environment, the complete test suite can be run with:
+
+```bash
+uv run pytest
+```
+
+or through the OrbitOps CLI:
+
+```bash
+uv run orbitops test
+```
+
+Additional development checks can be run with:
+
+```bash
+uv run ruff check .
+uv run pyright
+uv run pytest
+```
+
+These checks are used to verify code quality, static typing, input validation, command behavior, caching logic, API handling, propagation utilities, and other application functionality.
+
+Passing software tests does not imply precision orbit determination or certify OrbitOps for operational spacecraft use.
+
 ## Development
 
 Clone the repository:
 
 ```bash
 git clone <repository-url>
+
 cd OrbitOps
 ```
 
@@ -277,6 +320,31 @@ Run OrbitOps:
 
 ```bash
 uv run orbitops position 25544
+```
+
+Run the complete test suite:
+
+```bash
+uv run pytest
+```
+
+Run code-quality and type checks:
+
+```bash
+uv run ruff check .
+uv run pyright
+```
+
+Build the package:
+
+```bash
+uv build
+```
+
+Verify the built distribution:
+
+```bash
+uv run twine check dist/*
 ```
 
 ## License

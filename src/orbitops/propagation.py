@@ -9,6 +9,10 @@ def get_teme_cartesian(
     omm_data: dict,
 ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
 
+    if type(omm_data) is not dict:
+
+        raise TypeError("OMM data must be a dict.")
+
     satellite = Satrec()
 
     omm.initialize(
@@ -36,6 +40,10 @@ def get_geographic_position(
     omm_data: dict,
 ) -> tuple[float, float, float]:
 
+    if type(omm_data) is not dict:
+
+        raise TypeError("OMM data must be a dict.")
+
     timescale = load.timescale()
     current_time = timescale.now()
 
@@ -61,6 +69,26 @@ def propogate_future(
     step_seconds: int = 60
 ):
     """Returns timestamped future location data of a given spacecraft"""
+
+    if type(omm_data) is not dict:
+
+        raise TypeError("OMM data must be a dict.")
+
+    if type(minutes) is not int:
+
+        raise TypeError("Minutes must be an int.")
+
+    if minutes <= 0 or minutes > 1440:
+
+        raise ValueError("Minutes must be between 1 and 1440.")
+
+    if type(step_seconds) is not int:
+
+        raise TypeError("Step seconds must be an int.")
+
+    if step_seconds <= 0:
+
+        raise ValueError("Step seconds must be greater than 0.")
 
     satellite = Satrec()
 

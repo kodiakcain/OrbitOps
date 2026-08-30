@@ -1,5 +1,7 @@
 import csv
 import math
+import subprocess
+import sys
 from datetime import datetime
 from tkinter import filedialog
 
@@ -13,17 +15,32 @@ console = Console()
 def print_help_menu() -> None:
     """Print the help menu."""
     console.print("[bold cyan]=== OrbitOps Help Menu ===[/bold cyan]\n")
-    print("position <CATNR>          Show current latitude, longitude, and altitude")
-    print("teme <CATNR>              Show current TEME position and velocity")
-    print("info <CATNR>              Show satellite catalog information")
-    print("search <name>             Search for a satellite by name")
-    print("distance <CATNR1> <CATNR2> Show distance between two satellites")
-    print("watch <CATNR>             Continuously track a satellite's position")
-    print("gtrack <CATNR> <minutes> [--csv]           Plot a ground track of the satellite; optionally export CSV")
-    print("help                      Show this help menu")
+
+    print("position <CATNR>                     Show current latitude, longitude, and altitude")
+    print("teme <CATNR>                         Show current TEME position and velocity")
+    print("info <CATNR>                         Show satellite catalog information")
+    print("search <name>                        Search for a satellite by name")
+    print("distance <CATNR1> <CATNR2>           Show distance between two satellites")
+    print("watch <CATNR>                        Continuously track a satellite's position")
+    print("gtrack <CATNR> <minutes> [--csv]     Plot a ground track; optionally export CSV")
+    print("cache info                           Show all cached satellite data")
+    print("cache info <CATNR>                   Show cached data for one satellite")
+    print("cache clear                          Clear all cached satellite data")
+    print("cache clear <CATNR>                  Clear cached data for one satellite")
+    print("test                                 Run the OrbitOps test suite")
+    print("help                                 Show this help menu")
 
 def generate_ground_track(omm_data: dict, times: list) -> list[tuple]:
     """Generate the grond track and return it."""
+
+    if type(omm_data) is not dict:
+
+        raise TypeError("OMM data must be a dict.")
+
+    if type(times) is not list:
+
+        raise TypeError("Times must be a list.")
+    
     timescale = load.timescale()
 
     satellite = EarthSatellite.from_omm(
@@ -53,6 +70,30 @@ def generate_ground_track(omm_data: dict, times: list) -> list[tuple]:
 
 def plot_ground_track( ground_track: list[tuple], sat_name: str, minutes: int, omm_data: dict,) -> None:
     """Plots a satellite ground track on a Mercator projection."""
+
+    if type(ground_track) is not list:
+
+        raise TypeError("Ground track should be type list[tuple]")
+
+    if type(sat_name) is not str:
+
+        raise TypeError("Sat name should be a string.")
+
+    if type(minutes) is not int:
+
+        raise TypeError("Minutes should be an int.")
+
+    if type(omm_data) is not dict:
+
+        raise TypeError("OMM data should be a dict.")
+
+    if len(sat_name) <= 0 or len(sat_name) > 30:
+
+        raise ValueError("Satellite name must be between 1 and 30 digits.")
+
+    if minutes <= 0 or minutes > 1440:
+
+        raise ValueError("Minutes must be between 1 and 1440.")
 
     with console.status("[bold green]Creating ground track..."):
 
@@ -248,6 +289,18 @@ def plot_ground_track( ground_track: list[tuple], sat_name: str, minutes: int, o
 def save_ground_track_csv(ground_track: list[tuple], file_name: str,) -> None:
     """Ask the user for a location and save ground-track data as CSV."""
 
+    if type(ground_track) is not list:
+
+        raise TypeError("Ground track must be a list[tuple].")
+
+    if type(file_name) is not str:
+
+        raise TypeError("File name should be a string.")
+
+    if len(file_name) <= 0 or len(file_name) > 100:
+
+        raise ValueError("File name must be between 0 and 100 digits.")
+
     if not ground_track:
         console.print(
             "[bold red]No ground-track data available to export.[/bold red]"
@@ -304,3 +357,21 @@ def save_ground_track_csv(ground_track: list[tuple], file_name: str,) -> None:
     console.print(
         f"[bold green]Ground track saved to:[/bold green] {file_path}"
     )
+
+def run_pytest_tests() -> None:
+    """Run the OrbitOps test suite."""
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+        ],
+        check=False,
+    )
+
+    if result.returncode == 0:
+        console.print("[bold green]All OrbitOps tests passed.[/bold green]")
+    else:
+        console.print("[bold red]OrbitOps tests failed.[/bold red]")
+

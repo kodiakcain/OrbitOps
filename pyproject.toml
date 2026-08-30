@@ -1,6 +1,6 @@
 [project]
 name = "orbitops"
-version = "0.2.3"
+version = "0.2.4"
 description = "A command-line toolkit for satellite tracking and orbital analysis."
 readme = "README.md"
 requires-python = ">=3.14"

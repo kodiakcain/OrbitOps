@@ -12,6 +12,18 @@ console = Console()
 def get_sat_info_omm(catalog_number: int) -> dict:
     """Returns the satellite name and data in OMM JSON format."""
 
+    if type(catalog_number) is not int:
+                        
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be greater than 0.")
+
+    if len(str(catalog_number)) < 5 or len(str(catalog_number)) > 6:
+
+        raise ValueError("Invalid catalog number. Must be 5 or 6 digits.")
+
     if cache.cache_is_fresh(catalog_number):
         return cache.load_omm(catalog_number, {})
 
@@ -48,6 +60,18 @@ def get_sat_info_omm(catalog_number: int) -> dict:
 def get_satcat_data(catalog_number: int) -> dict:
     """Returns information about a given spacecraft."""
 
+    if type(catalog_number) is not int:
+                            
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be greater than 0.")
+
+    if len(str(catalog_number)) < 5 or len(str(catalog_number)) > 6:
+
+        raise ValueError("Invalid catalog number. Must be 5 or 6 digits.")
+
     url = "https://celestrak.org/satcat/records.php"
 
     params = {"CATNR": catalog_number, "FORMAT": "JSON"}
@@ -78,6 +102,14 @@ def get_satcat_data(catalog_number: int) -> dict:
 def search_by_name(name: str) -> list[dict]:
     """Searches Celestrack by name, returns most relevant results."""
 
+    if type(name) is not str:
+
+        raise TypeError("Name must be a string.")
+
+    if len(name) <= 0 or len(name) > 30:
+
+        raise ValueError("String must be between 1 and 30 characters.")
+
     url = "https://celestrak.org/satcat/records.php"
 
     params = {
@@ -106,6 +138,30 @@ def search_by_name(name: str) -> list[dict]:
 
 def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
     """Returns the 3D Euclidean distance between two spacecraft."""
+
+    if type(catalog_num1) is not int:
+                                
+        raise TypeError("First catalog number must be an int.")
+
+    if catalog_num1 < 0:
+
+        raise ValueError("First catalog number must be greater than 0.")
+
+    if len(str(catalog_num1)) < 5 or len(str(catalog_num1)) > 6:
+
+        raise ValueError("Invalid first catalog number. Must be 5 or 6 digits.")
+
+    if type(catalog_num2) is not int:
+                                    
+        raise TypeError("Second catalog number must be an int.")
+
+    if catalog_num2 < 0:
+
+        raise ValueError("Second catalog number must be greater than 0.")
+
+    if len(str(catalog_num2)) < 5 or len(str(catalog_num2)) > 6:
+
+        raise ValueError("Invalid second catalog number. Must be 5 or 6 digits.")
 
     first_sat_data = get_sat_info_omm(catalog_num1)
 
@@ -153,6 +209,18 @@ def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
 
 def watch(catalog_number: int) -> None:
     """Returns the latitude, longitude, and altitude of a spacecraft."""
+
+    if type(catalog_number) is not int:
+                                
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be greater than 0.")
+
+    if len(str(catalog_number)) < 5 or len(str(catalog_number)) > 6:
+
+        raise ValueError("Invalid catalog number. Must be 5 or 6 digits.")
 
     sat_data = get_sat_info_omm(catalog_number)
 

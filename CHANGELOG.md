@@ -2,6 +2,28 @@
 
 All notable changes to OrbitOps will be documented in this file.
 
+## [0.2.4] - 2026-08-30
+
+### Added
+
+- Added comprehensive automated test coverage across OrbitOps.
+- Added tests for API data retrieval and error handling.
+- Added tests for local OMM caching and cache-management functionality.
+- Added tests for command-line commands, argument handling, and error conditions.
+- Added tests for ground-track generation and CSV export.
+- Added tests for TEME and geographic propagation functionality.
+- Added tests for future orbital propagation and SGP4 error handling.
+- Added tests for input type and value validation throughout the application.
+- Added `orbitops test` command for running the OrbitOps test suite from the command line.
+
+### Changed
+
+- Added consistent input validation across OrbitOps modules.
+- Improved validation of catalog numbers, OMM data, time durations, ground-track data, filenames, and propagation intervals.
+- Updated the OrbitOps help menu to document the new `test` command.
+- Expanded development documentation with instructions for running pytest, Ruff, and Pyright.
+- Updated documentation to describe the OrbitOps automated test suite.
+
 ## [0.2.3] - 2026-08-30
 
 ### Added

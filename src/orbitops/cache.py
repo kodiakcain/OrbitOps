@@ -13,15 +13,52 @@ console = Console()
 def get_cache_path(catalog_number: int) -> Path:
     """Gets the OS-specific cache path for a given CATNR"""
 
-    return CACHE_DIR / f"{catalog_number}.json"
+    if type(catalog_number) is not int:
+
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be positive.")
+
+    if len(str(catalog_number)) <= 6 and len(str(catalog_number))  >= 5:
+        return CACHE_DIR / f"{catalog_number}.json"
+
+    else:
+
+        raise ValueError("Catalog number is invalid.")
 
 def cache_exists(catalog_number: int) -> bool:
     """Checks if a cache exists for a given CATNR"""
+
+    if type(catalog_number) is not int:
+
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be greater than 0.")
+
+    if len(str(catalog_number)) < 5 or len(str(catalog_number)) > 6:
+
+        raise ValueError("Invalid catalog number. Must be 5 or 6 digits.")
 
     return get_cache_path(catalog_number).is_file()
 
 def cache_is_fresh(catalog_number: int) -> bool:
     """Checks if the cache is within the 2 hour timeframe"""
+
+    if type(catalog_number) is not int:
+    
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be greater than 0.")
+
+    if len(str(catalog_number)) < 5 or len(str(catalog_number)) > 6:
+
+        raise ValueError("Invalid catalog number. Must be 5 or 6 digits.")
 
     path = get_cache_path(catalog_number)
 
@@ -40,6 +77,23 @@ def cache_is_fresh(catalog_number: int) -> bool:
 
 def save_omm(catalog_number: int, data: dict) -> None:
     """Save the OMM data to the CATNR-specific cache file"""
+
+    if type(catalog_number) is not int:
+        
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be greater than 0.")
+
+    if len(str(catalog_number)) < 5 or len(str(catalog_number)) > 6:
+
+        raise ValueError("Invalid catalog number. Must be 5 or 6 digits.")
+
+    if type(data) is not dict:
+
+        raise TypeError("Data must be a dictionary.")
+    
     path = get_cache_path(catalog_number)
 
     if not cache_is_fresh(catalog_number):
@@ -49,6 +103,23 @@ def save_omm(catalog_number: int, data: dict) -> None:
 
 def load_omm(catalog_number: int, data: dict) -> dict:
     """Main use for saving/loading data"""
+
+    if type(catalog_number) is not int:
+            
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be greater than 0.")
+
+    if len(str(catalog_number)) < 5 or len(str(catalog_number)) > 6:
+
+        raise ValueError("Invalid catalog number. Must be 5 or 6 digits.")
+
+    if type(data) is not dict:
+
+        raise TypeError("Data must be a dictionary.")
+    
     path = get_cache_path(catalog_number)
 
     if cache_exists(catalog_number):
@@ -65,6 +136,19 @@ def load_omm(catalog_number: int, data: dict) -> dict:
 
 def clear_omm_specific(catalog_number: int) -> None:
     """Clear a specific CATNR cache data"""
+
+    if type(catalog_number) is not int:
+                
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be greater than 0.")
+
+    if len(str(catalog_number)) < 5 or len(str(catalog_number)) > 6:
+
+        raise ValueError("Invalid catalog number. Must be 5 or 6 digits.")
+    
     path = get_cache_path(catalog_number)
 
     if cache_exists(catalog_number):
@@ -117,6 +201,19 @@ def print_cache() -> None:
 
 def print_cache_specific(catalog_number: int) -> None:
     """Print a specific CATNR cache"""
+
+    if type(catalog_number) is not int:
+                    
+        raise TypeError("Catalog number must be an int.")
+
+    if catalog_number < 0:
+
+        raise ValueError("Catalog number must be greater than 0.")
+
+    if len(str(catalog_number)) < 5 or len(str(catalog_number)) > 6:
+
+        raise ValueError("Invalid catalog number. Must be 5 or 6 digits.")
+    
     path = get_cache_path(catalog_number)
 
     if cache_exists(catalog_number):
