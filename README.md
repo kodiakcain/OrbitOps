@@ -7,23 +7,16 @@ It uses CelesTrak General Perturbations (GP) orbital data in Orbit Mean-Elements
 ## Features
 
 - Calculate current latitude, longitude, and altitude
-
 - Display TEME Cartesian position and velocity
-
 - View satellite catalog information
-
 - Search satellites by name
-
 - Calculate 3D distance between two spacecraft
-
 - Continuously monitor a spacecraft's calculated position
-
 - Generate predicted satellite ground tracks on a Mercator projection
-
 - Export predicted ground-track data to CSV
-
+- Cache CelesTrak OMM data locally to reduce repeated requests
+- Inspect and clear cached orbital data
 - Support modern CelesTrak GP data using OMM JSON
-
 - Support NORAD catalog numbers beyond the legacy 5-digit TLE limit
 
 ## Installation
@@ -176,6 +169,36 @@ timestamp_utc,latitude_deg,longitude_deg,altitude_km
 
 The CSV data is generated from the same propagated positions used to create the ground-track visualization.
 
+### Cache
+
+OrbitOps locally caches downloaded CelesTrak OMM data for up to two hours to reduce unnecessary repeated requests.
+
+View all cached orbital data:
+
+```bash
+orbitops cache info
+```
+
+View cached data for a specific spacecraft:
+
+```bash
+orbitops cache info 25544
+```
+
+Clear cached data for a specific spacecraft:
+
+```bash
+orbitops cache clear 25544
+```
+
+Clear the entire OrbitOps cache:
+
+```bash
+orbitops cache clear
+```
+
+Cached orbital elements are still propagated locally to the current or requested time, so using cached data does not cause spacecraft positions to remain static.
+
 ## Command Reference
 
 | Command | Usage | Description |
@@ -187,6 +210,8 @@ The CSV data is generated from the same propagated positions used to create the 
 | `distance` | `orbitops distance <CATNR1> <CATNR2>` | Calculate 3D spacecraft separation |
 | `watch` | `orbitops watch <CATNR>` | Continuously monitor spacecraft position |
 | `gtrack` | `orbitops gtrack <CATNR> <MINUTES> [--csv]` | Generate a predicted ground track with optional CSV export |
+| `cache info` | `orbitops cache info [CATNR]` | View cached orbital data |
+| `cache clear` | `orbitops cache clear [CATNR]` | Clear cached orbital data |
 | `help` | `orbitops help` | Display the help menu |
 
 ## How It Works
@@ -200,7 +225,7 @@ CelesTrak
     |
     | GP / OMM JSON
     v
-OrbitOps
+Local OrbitOps cache
     |
     | SGP4
     v
@@ -213,7 +238,9 @@ Calculated spacecraft state
 
 OrbitOps uses the OMM fields provided by CelesTrak to initialize the SGP4 propagation model. This avoids reliance on the legacy fixed-width TLE representation and allows OrbitOps to support newer NORAD catalog numbers beyond the traditional 5-digit TLE limit.
 
-For continuous tracking, the orbital data does not need to be downloaded every second. OrbitOps retrieves the orbital elements and performs subsequent propagation locally.
+Downloaded OMM data is cached locally for up to two hours. If valid cached data is available, OrbitOps reuses it instead of issuing another request to CelesTrak.
+
+For continuous tracking, the orbital data does not need to be downloaded every second. OrbitOps retrieves or loads the orbital elements once and performs subsequent propagation locally.
 
 ## Data and Accuracy
 
@@ -224,13 +251,9 @@ Positions are calculated from publicly available CelesTrak GP orbital elements u
 Accuracy can be affected by factors including:
 
 - Age of the orbital elements
-
 - Atmospheric drag
-
 - Spacecraft maneuvers
-
 - Spacecraft orbit
-
 - Time elapsed from the orbital-element epoch
 
 OrbitOps is intended for educational, informational, satellite-tracking, visualization, and general orbital-analysis purposes.
@@ -241,7 +264,6 @@ Clone the repository:
 
 ```bash
 git clone <repository-url>
-
 cd OrbitOps
 ```
 

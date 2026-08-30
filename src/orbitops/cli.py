@@ -3,7 +3,7 @@ from datetime import UTC, datetime, timedelta
 
 from rich.console import Console
 
-from . import api, etc, propagation
+from . import api, cache, etc, propagation
 
 console = Console()
 
@@ -18,6 +18,7 @@ VALID_COMMANDS = (
     "distance",
     "watch",
     "gtrack",
+    "cache"
 )
 
 
@@ -37,6 +38,46 @@ def main() -> None:
             etc.print_help_menu()
             return
 
+        # Caching command
+        if command == "cache":
+
+            if len(sys.argv) < 3:
+            
+                console.print("[bold red]Missing cache command.[/bold red]")
+                console.print("[dim yellow]Usage: orbitops cache <info|clear> [CATNR][/dim yellow]")
+
+                return
+
+            if sys.argv[2] not in ["info", "clear"]:
+
+                console.print(f"[bold red]{sys.argv[2]} is an invalid cache command.[/bold red]")
+
+                return
+
+            if str(sys.argv[2]) == "info" and len(sys.argv) == 3:
+
+                cache.print_cache()
+
+                return
+
+            if str(sys.argv[2]) == "clear" and len(sys.argv) == 3:
+
+                cache.clear_omm_all()
+
+                return
+
+            if str(sys.argv[2]) == "clear" and len(sys.argv) == 4:
+            
+                cache.clear_omm_specific(int(sys.argv[3]))
+
+                return
+
+            if str(sys.argv[2]) == "info" and len(sys.argv) == 4:
+            
+                cache.print_cache_specific(int(sys.argv[3]))
+
+                return
+            
         # Invalid command
         if command not in VALID_COMMANDS:
             console.print(f"[bold red]Invalid command: {command}[/bold red]")

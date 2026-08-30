@@ -1,3 +1,4 @@
 requests==2.34.2
 sgp4==2.27
 skyfield==1.55
+platformdirs==4.11.5

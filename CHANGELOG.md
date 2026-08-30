@@ -2,14 +2,30 @@
 
 All notable changes to OrbitOps will be documented in this file.
 
+## [0.2.3] - 2026-08-30
+
+### Added
+
+- Added local caching for CelesTrak OMM orbital data.
+- Added a two-hour cache lifetime to reduce unnecessary repeated requests to CelesTrak.
+- Added `orbitops cache info` for viewing all cached orbital data.
+- Added `orbitops cache info <CATNR>` for viewing cached data for a specific spacecraft.
+- Added `orbitops cache clear` for clearing the entire OrbitOps cache.
+- Added `orbitops cache clear <CATNR>` for clearing cached data for a specific spacecraft.
+- Added cross-platform cache directory handling using `platformdirs`.
+
+### Changed
+
+- Updated orbital data retrieval to use valid cached OMM data before issuing a new request to CelesTrak.
+- Updated the OrbitOps help menu to document cache-management commands.
+- Updated documentation to explain local orbital-data caching behavior.
+
 ## [0.2.2] - 2026-08-25
 
 ### Changed
 
 - Refactored orbital data retrieval to use CelesTrak GP/OMM JSON data.
-
 - Updated SGP4 and Skyfield propagation to initialize from OMM data.
-
 - Updated position, TEME, distance, watch, and ground-track features to use OMM-based orbital data.
 
 ### Added
@@ -21,19 +37,14 @@ All notable changes to OrbitOps will be documented in this file.
 ### Added
 
 - Added optional CSV export for predicted satellite ground tracks.
-
 - Added `--csv` option to the `gtrack` command.
-
 - Added a save dialog for selecting the location of exported ground-track CSV files.
-
 - Added UTC timestamps, latitude, longitude, and altitude data to ground-track CSV exports.
 
 ### Changed
 
 - Updated the OrbitOps help menu to document the optional `--csv` ground-track export.
-
 - Updated `gtrack` command usage to `orbitops gtrack <CATNR> <MINUTES> [--csv]`.
-
 - Improved ground-track argument validation and error handling.
 
 ## [0.2.0] - 2026-08-23
@@ -41,25 +52,17 @@ All notable changes to OrbitOps will be documented in this file.
 ### Added
 
 - Added predicted satellite ground-track generation.
-
 - Added Mercator-projection ground-track visualization using Matplotlib and Cartopy.
-
 - Added color-coded orbital revolution visualization.
-
 - Added UTC reference markers along predicted ground tracks.
-
 - Added ground-track start and end position markers.
-
 - Added orbital period information to ground-track visualizations.
-
 - Added TLE epoch and sampling information to ground-track visualizations.
-
 - Added `gtrack` command for generating predicted ground tracks over a specified time period.
 
 ### Changed
 
 - Updated the OrbitOps help menu with the new ground-track command.
-
 - Expanded orbital visualization capabilities using propagated TLE data.
 
 ## [0.1.1] - 2026-08-23
@@ -67,17 +70,13 @@ All notable changes to OrbitOps will be documented in this file.
 ### Added
 
 - Added Rich-powered CLI output and formatting.
-
 - Added loading spinners while fetching satellite data.
-
 - Added search status indicators.
 
 ### Changed
 
 - Improved CLI error and warning messages.
-
 - Improved help menu formatting.
-
 - Added HTTP request timeouts for improved reliability.
 
 ## [0.1.0] - 2026-08-22
@@ -85,15 +84,9 @@ All notable changes to OrbitOps will be documented in this file.
 ### Added
 
 - Initial release of OrbitOps.
-
 - Added satellite lookup using NORAD catalog numbers.
-
 - Added real-time geographic position calculations.
-
 - Added TEME position and velocity calculations.
-
 - Added satellite catalog information and name search.
-
 - Added satellite-to-satellite distance calculations.
-
 - Added continuous satellite position monitoring.

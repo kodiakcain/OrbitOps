@@ -4,13 +4,16 @@ import time
 import requests
 from rich.console import Console
 
-from . import propagation
+from . import cache, propagation
 
 console = Console()
 
 
 def get_sat_info_omm(catalog_number: int) -> dict:
     """Returns the satellite name and data in OMM JSON format."""
+
+    if cache.cache_is_fresh(catalog_number):
+        return cache.load_omm(catalog_number, {})
 
     url = "https://celestrak.org/NORAD/elements/gp.php"
 
@@ -29,6 +32,8 @@ def get_sat_info_omm(catalog_number: int) -> dict:
 
         if not data:
             return {}
+
+        cache.save_omm(catalog_number, data[0])
 
         return data[0]
 
