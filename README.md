@@ -36,6 +36,111 @@ Then verify the installation:
 orbitops help
 ```
 
+### Windows: If `orbitops.exe` Is Blocked
+
+Some Windows systems with Smart App Control, Device Guard, or other application-control policies enabled may block the Python-generated `orbitops.exe` command-line launcher.
+
+You may see an error similar to:
+
+```text
+orbitops.exe was blocked by your organization's Device Guard policy.
+```
+
+This does not necessarily mean OrbitOps failed to install. Windows may be blocking the generated executable launcher.
+
+The easiest solution is to install and run OrbitOps inside a Python virtual environment.
+
+#### 1. Create a folder for the environment
+
+Open Command Prompt and choose where you want the environment:
+
+```cmd
+cd C:\Users\YourName\Projects
+mkdir orbitops-env
+cd orbitops-env
+```
+
+#### 2. Create a virtual environment
+
+```cmd
+py -3.14 -m venv .venv
+```
+
+This creates an isolated Python environment inside the `.venv` folder.
+
+#### 3. Activate the virtual environment
+
+In Windows Command Prompt:
+
+```cmd
+.venv\Scripts\activate
+```
+
+Your prompt should now begin with `(.venv)`:
+
+```text
+(.venv) C:\Users\YourName\Projects\orbitops-env>
+```
+
+#### 4. Install OrbitOps
+
+```cmd
+python -m pip install orbitops
+```
+
+#### 5. Run OrbitOps normally
+
+```cmd
+orbitops help
+```
+
+For example:
+
+```cmd
+orbitops position 25544
+```
+
+or:
+
+```cmd
+orbitops tests
+```
+
+#### 6. Leave the virtual environment when finished
+
+```cmd
+deactivate
+```
+
+When you want to use OrbitOps again, return to the environment folder and reactivate it:
+
+```cmd
+cd C:\Users\YourName\Projects\orbitops-env
+.venv\Scripts\activate
+```
+
+You can then use the normal `orbitops` commands again:
+
+```cmd
+orbitops position 25544
+```
+
+You do **not** need to recreate or reinstall the environment each time. Simply activate the existing environment whenever you want to use OrbitOps.
+
+If the executable launcher is blocked outside a virtual environment, OrbitOps can also be invoked directly through Python:
+
+```cmd
+python -m orbitops.cli help
+```
+
+For example:
+
+```cmd
+python -m orbitops.cli position 25544
+```
+
+Using a virtual environment is recommended because it keeps OrbitOps and its Python dependencies isolated from other Python applications on the system.
+
 ## Usage
 
 OrbitOps uses NORAD Catalog Numbers to identify spacecraft.
@@ -210,7 +315,7 @@ orbitops tests
 
 The test suite verifies behavior across OrbitOps components, including API handling, caching, command-line behavior, orbital propagation utilities, ground-track generation, data validation, and error handling.
 
-The test command is primarily intended for development and verification. Running the test suite requires the OrbitOps development dependencies, including `pytest`.
+`pytest` is installed automatically as an OrbitOps dependency so the packaged test suite can be run through the OrbitOps CLI.
 
 ## Command Reference
 
@@ -285,7 +390,7 @@ uv run pytest
 or through the OrbitOps CLI:
 
 ```bash
-uv run orbitops test
+uv run orbitops tests
 ```
 
 Additional development checks can be run with:
@@ -306,7 +411,6 @@ Clone the repository:
 
 ```bash
 git clone <repository-url>
-
 cd OrbitOps
 ```
 

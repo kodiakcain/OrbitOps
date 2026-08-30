@@ -2,6 +2,20 @@
 
 All notable changes to OrbitOps will be documented in this file.
 
+## [0.2.7] - 2026-08-30
+
+### Added
+
+- Added Windows troubleshooting instructions for systems where Smart App Control or Device Guard blocks the generated `orbitops.exe` launcher.
+- Added step-by-step instructions for creating, activating, and using OrbitOps inside a Python virtual environment.
+- Added `python -m orbitops.cli` as an alternative way to run OrbitOps when the executable launcher is blocked.
+
+### Changed
+
+- Updated installation documentation to recommend virtual environments when Windows application-control policies interfere with the OrbitOps launcher.
+- Updated test-suite documentation to reflect that `pytest` is installed automatically as an OrbitOps dependency.
+- Corrected test command documentation to consistently use `orbitops tests`.
+
 ## [0.2.6] - 2026-08-30
 
 ### Fixed
