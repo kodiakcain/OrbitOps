@@ -2,6 +2,20 @@
 
 All notable changes to OrbitOps will be documented in this file.
 
+## [0.2.6] - 2026-08-30
+
+### Fixed
+
+- Fixed the pyprpoject.toml to include pytest.
+
+## [0.2.5] - 2026-08-30
+
+### Fixed
+
+- Fixed the `orbitops tests` command to run pytest in a separate subprocess.
+- Fixed inconsistent test behavior caused by Rich terminal formatting interfering with pytest output capture.
+- Fixed the test command so the OrbitOps test suite runs consistently when invoked through the CLI.
+
 ## [0.2.4] - 2026-08-30
 
 ### Added

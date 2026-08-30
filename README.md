@@ -205,7 +205,7 @@ Cached orbital elements are still propagated locally to the current or requested
 Run the OrbitOps automated test suite:
 
 ```bash
-orbitops test
+orbitops tests
 ```
 
 The test suite verifies behavior across OrbitOps components, including API handling, caching, command-line behavior, orbital propagation utilities, ground-track generation, data validation, and error handling.
@@ -225,7 +225,7 @@ The test command is primarily intended for development and verification. Running
 | `gtrack` | `orbitops gtrack <CATNR> <MINUTES> [--csv]` | Generate a predicted ground track with optional CSV export |
 | `cache info` | `orbitops cache info [CATNR]` | View cached orbital data |
 | `cache clear` | `orbitops cache clear [CATNR]` | Clear cached orbital data |
-| `test` | `orbitops test` | Run the OrbitOps test suite |
+| `tests` | `orbitops tests` | Run the OrbitOps test suite |
 | `help` | `orbitops help` | Display the help menu |
 
 ## How It Works

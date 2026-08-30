@@ -3,6 +3,7 @@ import math
 import subprocess
 import sys
 from datetime import datetime
+from pathlib import Path
 from tkinter import filedialog
 
 import cartopy.crs as ccrs
@@ -27,7 +28,7 @@ def print_help_menu() -> None:
     print("cache info <CATNR>                   Show cached data for one satellite")
     print("cache clear                          Clear all cached satellite data")
     print("cache clear <CATNR>                  Clear cached data for one satellite")
-    print("test                                 Run the OrbitOps test suite")
+    print("tests                                 Run the OrbitOps test suite")
     print("help                                 Show this help menu")
 
 def generate_ground_track(omm_data: dict, times: list) -> list[tuple]:
@@ -361,17 +362,23 @@ def save_ground_track_csv(ground_track: list[tuple], file_name: str,) -> None:
 def run_pytest_tests() -> None:
     """Run the OrbitOps test suite."""
 
+    test_directory = Path(__file__).parent / "tests"
+
     result = subprocess.run(
         [
             sys.executable,
             "-m",
             "pytest",
+            str(test_directory),
         ],
         check=False,
     )
 
     if result.returncode == 0:
-        console.print("[bold green]All OrbitOps tests passed.[/bold green]")
+        console.print(
+            "[bold green]All OrbitOps tests passed.[/bold green]"
+        )
     else:
-        console.print("[bold red]OrbitOps tests failed.[/bold red]")
-
+        console.print(
+            "[bold red]OrbitOps tests failed.[/bold red]"
+        )

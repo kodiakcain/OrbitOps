@@ -571,12 +571,13 @@ wheels = [
 
 [[package]]
 name = "orbitops"
-version = "0.2.4"
+version = "0.2.6"
 source = { editable = "." }
 dependencies = [
     { name = "cartopy" },
     { name = "matplotlib" },
     { name = "platformdirs" },
+    { name = "pytest" },
     { name = "requests" },
     { name = "rich" },
     { name = "sgp4" },
@@ -596,6 +597,7 @@ requires-dist = [
     { name = "cartopy", specifier = ">=0.25.0" },
     { name = "matplotlib", specifier = ">=3.11.1" },
     { name = "platformdirs", specifier = ">=4.11.5" },
+    { name = "pytest", specifier = ">=9.1.1" },
     { name = "requests", specifier = ">=2.34.2" },
     { name = "rich", specifier = ">=15.0.0" },
     { name = "sgp4", specifier = ">=2.27" },
