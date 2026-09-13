@@ -1,13 +1,15 @@
 [project]
 name = "orbitops"
-version = "0.2.7"
+version = "0.2.8"
 description = "A command-line toolkit for satellite tracking and orbital analysis."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "cartopy>=0.25.0",
     "matplotlib>=3.11.1",
+    "numpy>=2.5.2",
     "platformdirs>=4.11.5",
+    "plotly>=6.0.0",
     "pytest>=9.1.1",
     "requests>=2.34.2",
     "rich>=15.0.0",

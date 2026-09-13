@@ -2,6 +2,42 @@
 
 All notable changes to OrbitOps will be documented in this file.
 
+## [0.2.8] - 2026-09-13
+
+### Added
+
+- Added interactive 3D satellite visualization.
+
+- Added visualize command for generating predicted 3D satellite visualizations over a specified time period.
+
+- Added interactive 3D Earth rendering with land masses, coastlines, international country borders, and latitude/longitude grid lines.
+
+- Added predicted spacecraft orbit paths to 3D visualizations.
+
+- Added an animated 3D spacecraft model that follows the predicted orbital path.
+
+- Added play and pause controls for spacecraft animation.
+
+- Added a timeline slider for manually viewing predicted spacecraft positions throughout the visualization.
+
+- Added UTC time, latitude, longitude, and altitude readouts for the currently displayed spacecraft position.
+
+- Added a save dialog for selecting the location of generated visualization HTML files.
+
+- Added automatic opening of saved 3D visualizations in the default web browser.
+
+- Added python -m orbitops support through a package __main__.py entry point.
+
+### Changed
+
+- Updated the OrbitOps help menu to document the new visualize command.
+
+- Updated visualize command usage to orbitops visualize <CATNR> <MINUTES>.
+
+- Updated Windows troubleshooting documentation to use python -m orbitops as an alternative way to run OrbitOps when the executable launcher is blocked.
+
+- Updated documentation to describe interactive 3D satellite visualization functionality.
+
 ## [0.2.7] - 2026-08-30
 
 ### Added

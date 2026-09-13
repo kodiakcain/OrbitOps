@@ -24,12 +24,14 @@ def print_help_menu() -> None:
     print("distance <CATNR1> <CATNR2>           Show distance between two satellites")
     print("watch <CATNR>                        Continuously track a satellite's position")
     print("gtrack <CATNR> <minutes> [--csv]     Plot a ground track; optionally export CSV")
+    print("visualize <CATNR> <minutes>          Generate an interactive 3D satellite visualization")
     print("cache info                           Show all cached satellite data")
     print("cache info <CATNR>                   Show cached data for one satellite")
     print("cache clear                          Clear all cached satellite data")
     print("cache clear <CATNR>                  Clear cached data for one satellite")
-    print("tests                                 Run the OrbitOps test suite")
+    print("tests                                Run the OrbitOps test suite")
     print("help                                 Show this help menu")
+
 
 def generate_ground_track(omm_data: dict, times: list) -> list[tuple]:
     """Generate the grond track and return it."""

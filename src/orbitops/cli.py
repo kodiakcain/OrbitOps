@@ -3,7 +3,7 @@ from datetime import UTC, datetime, timedelta
 
 from rich.console import Console
 
-from . import api, cache, etc, propagation
+from . import api, cache, etc, propagation, visualization
 
 console = Console()
 
@@ -19,7 +19,8 @@ VALID_COMMANDS = (
     "watch",
     "gtrack",
     "cache",
-    "tests"
+    "tests",
+    "visualize"
 )
 
 
@@ -83,6 +84,71 @@ def main() -> None:
                 cache.print_cache_specific(int(sys.argv[3]))
 
                 return
+
+        if command == "visualize":
+
+            if len(sys.argv) < 4:
+                console.print(
+                    "[bold red]Catalog number and duration are required.[/bold red]"
+                )
+                console.print(
+                    "[dim yellow]Usage: orbitops visualize <CATNR> <MINUTES>[/dim yellow]"
+                )
+                return
+
+            try:
+                catalog_number = int(sys.argv[2])
+                minutes = int(sys.argv[3])
+
+            except ValueError:
+                console.print(
+                    "[bold red]Catalog number and duration must be integers.[/bold red]"
+                )
+                return
+
+            if minutes < 1 or minutes > 1440:
+                console.print(
+                    "[bold red]Visualization duration must be in range 1-1440 minutes.[/bold red]"
+                )
+                return
+
+            sat_data = api.get_sat_info_omm(catalog_number)
+
+            if not sat_data:
+                console.print(
+                    f"[dim yellow]No satellite found with catalog number "
+                    f"{catalog_number}.[/dim yellow]"
+                )
+                return
+
+            sat_name = (
+                sat_data.get("OBJECT_NAME")
+                or str(catalog_number)
+            )
+
+            start_time = datetime.now(UTC)
+
+            times = []
+
+            for minute in range(minutes + 1):
+                times.append(
+                    start_time + timedelta(minutes=minute)
+                )
+
+            ground_track = etc.generate_ground_track(
+                sat_data,
+                times,
+            )
+
+            figure = visualization.generate_3d_globe(
+                ground_track,
+                sat_name,
+                catalog_number,
+            )
+
+            visualization.save_and_open_globe(figure, f"{sat_name}-visualization-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.html")
+
+            return
             
         # Invalid command
         if command not in VALID_COMMANDS:

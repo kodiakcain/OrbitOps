@@ -2,23 +2,25 @@
 
 OrbitOps is a Python command-line toolkit for satellite tracking and basic orbital analysis using publicly available CelesTrak data.
 
-It uses CelesTrak General Perturbations (GP) orbital data in Orbit Mean-Elements Message (OMM) JSON format and the SGP4 propagation model to calculate spacecraft positions, velocities, and distances.
+It uses CelesTrak General Perturbations (GP) orbital data in Orbit Mean-Elements Message (OMM) JSON format and the SGP4 propagation model to calculate spacecraft positions, velocities, distances, ground tracks, and interactive orbital visualizations.
 
 ## Features
 
-- Calculate current latitude, longitude, and altitude
-- Display TEME Cartesian position and velocity
-- View satellite catalog information
-- Search satellites by name
-- Calculate 3D distance between two spacecraft
-- Continuously monitor a spacecraft's calculated position
-- Generate predicted satellite ground tracks on a Mercator projection
-- Export predicted ground-track data to CSV
-- Cache CelesTrak OMM data locally to reduce repeated requests
-- Inspect and clear cached orbital data
-- Run the OrbitOps test suite from the command line
-- Support modern CelesTrak GP data using OMM JSON
-- Support NORAD catalog numbers beyond the legacy 5-digit TLE limit
+* Calculate current latitude, longitude, and altitude
+* Display TEME Cartesian position and velocity
+* View satellite catalog information
+* Search satellites by name
+* Calculate 3D distance between two spacecraft
+* Continuously monitor a spacecraft's calculated position
+* Generate predicted satellite ground tracks on a Mercator projection
+* Export predicted ground-track data to CSV
+* Generate interactive 3D satellite visualizations
+* Display propagated spacecraft motion around a 3D Earth
+* Cache CelesTrak OMM data locally to reduce repeated requests
+* Inspect and clear cached orbital data
+* Run the OrbitOps test suite from the command line
+* Support modern CelesTrak GP data using OMM JSON
+* Support NORAD catalog numbers beyond the legacy 5-digit TLE limit
 
 ## Installation
 
@@ -36,6 +38,12 @@ Then verify the installation:
 orbitops help
 ```
 
+OrbitOps can also be invoked directly through Python:
+
+```bash
+python -m orbitops help
+```
+
 ### Windows: If `orbitops.exe` Is Blocked
 
 Some Windows systems with Smart App Control, Device Guard, or other application-control policies enabled may block the Python-generated `orbitops.exe` command-line launcher.
@@ -46,9 +54,27 @@ You may see an error similar to:
 orbitops.exe was blocked by your organization's Device Guard policy.
 ```
 
-This does not necessarily mean OrbitOps failed to install. Windows may be blocking the generated executable launcher.
+This does not necessarily mean OrbitOps failed to install. Windows may be blocking the generated executable launcher rather than OrbitOps itself.
 
-The easiest solution is to install and run OrbitOps inside a Python virtual environment.
+OrbitOps can be invoked without the generated launcher by running it as a Python module:
+
+```cmd
+python -m orbitops help
+```
+
+For example:
+
+```cmd
+python -m orbitops position 25544
+```
+
+or:
+
+```cmd
+python -m orbitops visualize 25544 60
+```
+
+The other option is to install and run OrbitOps inside a Python virtual environment.
 
 #### 1. Create a folder for the environment
 
@@ -88,7 +114,7 @@ Your prompt should now begin with `(.venv)`:
 python -m pip install orbitops
 ```
 
-#### 5. Run OrbitOps normally
+#### 5. Run OrbitOps
 
 ```cmd
 orbitops help
@@ -103,7 +129,13 @@ orbitops position 25544
 or:
 
 ```cmd
-orbitops tests
+orbitops visualize 25544 60
+```
+
+If the executable launcher is still blocked, use:
+
+```cmd
+python -m orbitops visualize 25544 60
 ```
 
 #### 6. Leave the virtual environment when finished
@@ -126,18 +158,6 @@ orbitops position 25544
 ```
 
 You do **not** need to recreate or reinstall the environment each time. Simply activate the existing environment whenever you want to use OrbitOps.
-
-If the executable launcher is blocked outside a virtual environment, OrbitOps can also be invoked directly through Python:
-
-```cmd
-python -m orbitops.cli help
-```
-
-For example:
-
-```cmd
-python -m orbitops.cli position 25544
-```
 
 Using a virtual environment is recommended because it keeps OrbitOps and its Python dependencies isolated from other Python applications on the system.
 
@@ -275,6 +295,46 @@ timestamp_utc,latitude_deg,longitude_deg,altitude_km
 
 The CSV data is generated from the same propagated positions used to create the ground-track visualization.
 
+### 3D Visualization
+
+Generate an interactive 3D visualization of a spacecraft's predicted motion around Earth.
+
+```bash
+orbitops visualize 25544 60
+```
+
+The first argument is the spacecraft's NORAD Catalog Number and the second is the visualization duration in minutes.
+
+For example:
+
+```text
+orbitops visualize 25544 180
+```
+
+generates a three-hour visualization for the International Space Station.
+
+Visualization durations can range from 1 to 1440 minutes.
+
+OrbitOps propagates the spacecraft's orbit over the requested period and generates an interactive HTML visualization containing:
+
+* A rotatable and zoomable 3D Earth
+* Land masses, coastlines, international borders, and latitude/longitude grid lines
+* The spacecraft's predicted orbital path
+* A 3D spacecraft model
+* Animated spacecraft movement along the propagated path
+* Play and pause controls
+* A timeline slider for manually moving through the propagated positions
+* UTC time for the currently displayed position
+* Latitude, longitude, and altitude for the currently displayed position
+
+After the visualization is generated, OrbitOps opens a Save As dialog so you can choose where the HTML file should be stored.
+
+After saving, the visualization opens automatically in your default web browser.
+
+The generated visualization is an HTML file and uses Three.js in the browser to render the interactive 3D scene. An internet connection may therefore be required when opening the visualization so the browser can load the required Three.js modules.
+
+The spacecraft positions shown in the visualization are propagated from CelesTrak orbital elements using SGP4. They are predicted positions rather than live spacecraft telemetry.
+
 ### Cache
 
 OrbitOps locally caches downloaded CelesTrak OMM data for up to two hours to reduce unnecessary repeated requests.
@@ -307,31 +367,31 @@ Cached orbital elements are still propagated locally to the current or requested
 
 ### Test Suite
 
-Run the OrbitOps automated test suite:
+The OrbitOps source repository includes an automated pytest test suite for development and release verification.
+
+When working from a development installation, run:
 
 ```bash
-orbitops tests
+uv run pytest
 ```
 
-The test suite verifies behavior across OrbitOps components, including API handling, caching, command-line behavior, orbital propagation utilities, ground-track generation, data validation, and error handling.
-
-`pytest` is installed automatically as an OrbitOps dependency so the packaged test suite can be run through the OrbitOps CLI.
+The test suite verifies behavior across OrbitOps components, including API handling, caching, command-line behavior, orbital propagation utilities, ground-track generation, data validation, visualization utilities, and error handling.
 
 ## Command Reference
 
-| Command | Usage | Description |
-| --- | --- | --- |
-| `position` | `orbitops position <CATNR>` | Show latitude, longitude, and altitude |
-| `teme` | `orbitops teme <CATNR>` | Show TEME position and velocity |
-| `info` | `orbitops info <CATNR>` | Show satellite catalog information |
-| `search` | `orbitops search <name>` | Search satellites by name |
-| `distance` | `orbitops distance <CATNR1> <CATNR2>` | Calculate 3D spacecraft separation |
-| `watch` | `orbitops watch <CATNR>` | Continuously monitor spacecraft position |
-| `gtrack` | `orbitops gtrack <CATNR> <MINUTES> [--csv]` | Generate a predicted ground track with optional CSV export |
-| `cache info` | `orbitops cache info [CATNR]` | View cached orbital data |
-| `cache clear` | `orbitops cache clear [CATNR]` | Clear cached orbital data |
-| `tests` | `orbitops tests` | Run the OrbitOps test suite |
-| `help` | `orbitops help` | Display the help menu |
+| Command       | Usage                                       | Description                                                |
+| ------------- | ------------------------------------------- | ---------------------------------------------------------- |
+| `position`    | `orbitops position <CATNR>`                 | Show latitude, longitude, and altitude                     |
+| `teme`        | `orbitops teme <CATNR>`                     | Show TEME position and velocity                            |
+| `info`        | `orbitops info <CATNR>`                     | Show satellite catalog information                         |
+| `search`      | `orbitops search <name>`                    | Search satellites by name                                  |
+| `distance`    | `orbitops distance <CATNR1> <CATNR2>`       | Calculate 3D spacecraft separation                         |
+| `watch`       | `orbitops watch <CATNR>`                    | Continuously monitor spacecraft position                   |
+| `gtrack`      | `orbitops gtrack <CATNR> <MINUTES> [--csv]` | Generate a predicted ground track with optional CSV export |
+| `visualize`   | `orbitops visualize <CATNR> <MINUTES>`      | Generate an interactive 3D spacecraft visualization        |
+| `cache info`  | `orbitops cache info [CATNR]`               | View cached orbital data                                   |
+| `cache clear` | `orbitops cache clear [CATNR]`              | Clear cached orbital data                                  |
+| `help`        | `orbitops help`                             | Display the help menu                                      |
 
 ## How It Works
 
@@ -353,13 +413,19 @@ Calculated spacecraft state
     +--> TEME position and velocity
     |
     +--> Latitude / Longitude / Altitude
+    |
+    +--> Predicted ground track
+    |
+    +--> Interactive 3D visualization
 ```
 
 OrbitOps uses the OMM fields provided by CelesTrak to initialize the SGP4 propagation model. This avoids reliance on the legacy fixed-width TLE representation and allows OrbitOps to support newer NORAD catalog numbers beyond the traditional 5-digit TLE limit.
 
 Downloaded OMM data is cached locally for up to two hours. If valid cached data is available, OrbitOps reuses it instead of issuing another request to CelesTrak.
 
-For continuous tracking, the orbital data does not need to be downloaded every second. OrbitOps retrieves or loads the orbital elements once and performs subsequent propagation locally.
+For continuous tracking and visualization, the orbital data does not need to be downloaded for every propagated point. OrbitOps retrieves or loads the orbital elements and performs subsequent propagation locally.
+
+For the 3D visualization, the propagated geographic coordinates are converted into 3D Cartesian coordinates and embedded into a generated HTML document. The browser then renders the Earth, orbital path, spacecraft model, and animation using Three.js.
 
 ## Data and Accuracy
 
@@ -369,11 +435,13 @@ Positions are calculated from publicly available CelesTrak GP orbital elements u
 
 Accuracy can be affected by factors including:
 
-- Age of the orbital elements
-- Atmospheric drag
-- Spacecraft maneuvers
-- Spacecraft orbit
-- Time elapsed from the orbital-element epoch
+* Age of the orbital elements
+* Atmospheric drag
+* Spacecraft maneuvers
+* Spacecraft orbit
+* Time elapsed from the orbital-element epoch
+
+The 3D visualization displays propagated positions produced from the same underlying orbital data and should not be interpreted as a real-time mission visualization or authoritative spacecraft telemetry display.
 
 OrbitOps is intended for educational, informational, satellite-tracking, visualization, and general orbital-analysis purposes.
 
@@ -387,12 +455,6 @@ From the development environment, the complete test suite can be run with:
 uv run pytest
 ```
 
-or through the OrbitOps CLI:
-
-```bash
-uv run orbitops tests
-```
-
 Additional development checks can be run with:
 
 ```bash
@@ -401,7 +463,35 @@ uv run pyright
 uv run pytest
 ```
 
-These checks are used to verify code quality, static typing, input validation, command behavior, caching logic, API handling, propagation utilities, and other application functionality.
+These checks are used to verify code quality, static typing, input validation, command behavior, caching logic, API handling, propagation utilities, visualization utilities, and other application functionality.
+
+A built wheel can also be installed into a clean virtual environment to verify that OrbitOps and its packaged resources work independently of the source repository.
+
+For example:
+
+```bash
+python -m venv release-test
+```
+
+Activate the environment and install the built wheel:
+
+```bash
+pip install dist/orbitops-0.2.7-py3-none-any.whl
+```
+
+Then verify the installed package:
+
+```bash
+orbitops help
+orbitops position 25544
+orbitops visualize 25544 30
+```
+
+The Python module entry point can also be tested with:
+
+```bash
+python -m orbitops help
+```
 
 Passing software tests does not imply precision orbit determination or certify OrbitOps for operational spacecraft use.
 
@@ -424,6 +514,12 @@ Run OrbitOps:
 
 ```bash
 uv run orbitops position 25544
+```
+
+Generate a 3D visualization:
+
+```bash
+uv run orbitops visualize 25544 60
 ```
 
 Run the complete test suite:
