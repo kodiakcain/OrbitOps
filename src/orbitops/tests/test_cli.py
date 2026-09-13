@@ -347,14 +347,16 @@ def test_main_teme(monkeypatch, capsys):
 
     captured = capsys.readouterr()
 
-    assert "TEME Cartesian State of ISS (ZARYA)" in captured.out
+    assert "ISS (ZARYA) TEME Cartesian State" in captured.out
+    assert "Position Component" in captured.out
+    assert "Position" in captured.out
+    assert "Velocity" in captured.out
     assert "1000.00 km" in captured.out
     assert "2000.00 km" in captured.out
     assert "3000.00 km" in captured.out
     assert "1.000 km/s" in captured.out
     assert "2.000 km/s" in captured.out
     assert "3.000 km/s" in captured.out
-
 
 def test_main_teme_passes_omm_to_propagation(monkeypatch):
     sat_data = {
@@ -429,11 +431,13 @@ def test_main_position(monkeypatch, capsys):
 
     captured = capsys.readouterr()
 
-    assert "Geographic position of ISS (ZARYA)" in captured.out
-    assert "Latitude:  12.3457°" in captured.out
-    assert "Longitude: -76.5432°" in captured.out
-    assert "Altitude:  415.68 km" in captured.out
-
+    assert "ISS (ZARYA)'s Position" in captured.out
+    assert "Latitude" in captured.out
+    assert "Longitude" in captured.out
+    assert "Altitude" in captured.out
+    assert "12.3457°" in captured.out
+    assert "-76.5432°" in captured.out
+    assert "415.68 km" in captured.out
 
 def test_main_position_catalog_name_fallback(monkeypatch, capsys):
     sat_data = {
@@ -466,8 +470,9 @@ def test_main_position_catalog_name_fallback(monkeypatch, capsys):
 
     captured = capsys.readouterr()
 
-    assert "Geographic position of 25544" in captured.out
-
+    assert "25544's Position" in captured.out
+    assert "0.0000°" in captured.out
+    assert "400.00 km" in captured.out
 
 # ---------------------------------------------------------------------------
 # Info
@@ -506,10 +511,15 @@ def test_main_info(monkeypatch, capsys):
 
     captured = capsys.readouterr()
 
-    assert "OBJECT_NAME: ISS (ZARYA)" in captured.out
-    assert "NORAD_CAT_ID: 25544" in captured.out
-    assert "COUNTRY: ISS" in captured.out
-
+    assert "ISS (ZARYA) Information" in captured.out
+    assert "Property" in captured.out
+    assert "Value" in captured.out
+    assert "OBJECT_NAME" in captured.out
+    assert "ISS (ZARYA)" in captured.out
+    assert "NORAD_CAT_ID" in captured.out
+    assert "25544" in captured.out
+    assert "COUNTRY" in captured.out
+    assert "ISS" in captured.out
 
 def test_main_info_not_found(monkeypatch, capsys):
     monkeypatch.setattr(
@@ -571,10 +581,14 @@ def test_main_search(monkeypatch, capsys):
 
     captured = capsys.readouterr()
 
-    assert "OBJECT_NAME: ISS (ZARYA)" in captured.out
-    assert "NORAD_CAT_ID: 25544" in captured.out
-
-
+    assert "Results for Search ISS" in captured.out
+    assert "Property" in captured.out
+    assert "Value" in captured.out
+    assert "OBJECT_NAME" in captured.out
+    assert "ISS (ZARYA)" in captured.out
+    assert "NORAD_CAT_ID" in captured.out
+    assert "25544" in captured.out
+    
 def test_main_search_only_prints_first_result(monkeypatch, capsys):
     results = [
         {

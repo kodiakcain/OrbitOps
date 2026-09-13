@@ -2,6 +2,16 @@
 
 All notable changes to OrbitOps will be documented in this file.
 
+## [0.2.9] - 2026-09-13
+
+### Added
+
+- Added Rich tables to improve readability of results
+
+### Changed
+
+- Updated output tests for multiple functions to test rich tables
+
 ## [0.2.8] - 2026-09-13
 
 ### Added

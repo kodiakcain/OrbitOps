@@ -4,6 +4,7 @@ from pathlib import Path
 
 from platformdirs import user_cache_path
 from rich.console import Console
+from rich.table import Table
 
 CACHE_DIR: Path = user_cache_path("OrbitOps", ensure_exists=True)
 CACHE_LIFETIME = timedelta(hours=2)
@@ -193,7 +194,17 @@ def print_cache() -> None:
             file_count += 1
 
             with open(file, "r", encoding="utf-8") as cache_file:
-                print(cache_file.read())
+                data = json.load(cache_file)
+
+                table = Table(title=f"CATNR {file.stem} Cache", show_lines=True)
+
+                table.add_column("Property", style="cyan")
+                table.add_column("Value", style="green")
+
+                for key, value in data.items():
+                    table.add_row(str(key), str(value))
+
+                console.print(table)
 
     if file_count == 0:
 
@@ -219,16 +230,20 @@ def print_cache_specific(catalog_number: int) -> None:
     if cache_exists(catalog_number):
 
         with open(path, "r", encoding="utf-8") as cache_file:
-            print(cache_file.read())
+            data = json.load(cache_file)
+
+            table = Table(title=f"CATNR {catalog_number} Cache", show_lines=True)
+
+            table.add_column("Property", style="cyan")
+            table.add_column("Value", style="green")
+
+            for key, value in data.items():
+                table.add_row(str(key), str(value))
+
+            console.print(table)
 
         console.print(f"[bold green]Retrieved cache data for CATNR {catalog_number}.[/bold green]")
 
     else:
 
         console.print("[bold red]CATNR not in cache.[/bold red]")
-            
-
-
-
-
-    

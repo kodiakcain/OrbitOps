@@ -3,6 +3,8 @@ import time
 
 import requests
 from rich.console import Console
+from rich.live import Live
+from rich.table import Table
 
 from . import cache, propagation
 
@@ -203,7 +205,7 @@ def get_distance_sats(catalog_num1: int, catalog_num2: int) -> None:
         f"The distance between "
         f"{first_sat_name} and "
         f"{second_sat_name} is "
-        f"{math.dist(teme_first_sat, teme_second_sat):.3f}km."
+        f"{math.dist(teme_first_sat, teme_second_sat):.3f} km."
     )
 
 
@@ -238,18 +240,24 @@ def watch(catalog_number: int) -> None:
 
     console.print("[dim yellow]Press 'Ctrl+C' to stop watching.[/dim yellow]")
 
-    while True:
-        latitude, longitude, altitude = propagation.get_geographic_position(
-            sat_data,
-        )
+    with Live(console=console, refresh_per_second=4) as live:
+        while True:
+            latitude, longitude, altitude = propagation.get_geographic_position(
+                sat_data,
+            )
 
-        print(
-            f"\r{sat_name} | "
-            f"Lat: {latitude:.4f}° | "
-            f"Lon: {longitude:.4f}° | "
-            f"Alt: {altitude:.2f} km",
-            end="",
-            flush=True,
-        )
+            table = Table(title=f"{sat_name.strip()} Calculated Current Position")
 
-        time.sleep(1)
+            table.add_column("Latitude", style="cyan")
+            table.add_column("Longitude", style="magenta")
+            table.add_column("Altitude", style="green")
+
+            table.add_row(
+                f"{latitude:.4f}°",
+                f"{longitude:.4f}°",
+                f"{altitude:.2f} km",
+            )
+
+            live.update(table)
+
+            time.sleep(1)

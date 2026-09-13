@@ -9,28 +9,77 @@ from tkinter import filedialog
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 from rich.console import Console
+from rich.table import Table
 from skyfield.api import EarthSatellite, load, wgs84
 
 console = Console()
 
 def print_help_menu() -> None:
     """Print the help menu."""
-    console.print("[bold cyan]=== OrbitOps Help Menu ===[/bold cyan]\n")
 
-    print("position <CATNR>                     Show current latitude, longitude, and altitude")
-    print("teme <CATNR>                         Show current TEME position and velocity")
-    print("info <CATNR>                         Show satellite catalog information")
-    print("search <name>                        Search for a satellite by name")
-    print("distance <CATNR1> <CATNR2>           Show distance between two satellites")
-    print("watch <CATNR>                        Continuously track a satellite's position")
-    print("gtrack <CATNR> <minutes> [--csv]     Plot a ground track; optionally export CSV")
-    print("visualize <CATNR> <minutes>          Generate an interactive 3D satellite visualization")
-    print("cache info                           Show all cached satellite data")
-    print("cache info <CATNR>                   Show cached data for one satellite")
-    print("cache clear                          Clear all cached satellite data")
-    print("cache clear <CATNR>                  Clear cached data for one satellite")
-    print("tests                                Run the OrbitOps test suite")
-    print("help                                 Show this help menu")
+    table = Table(title="OrbitOps Help Menu", show_lines=True)
+
+    table.add_column("Command", style="cyan")
+    table.add_column("Description", style="green")
+
+    table.add_row(
+        "position <CATNR>",
+        "Show current latitude, longitude, and altitude",
+    )
+    table.add_row(
+        "teme <CATNR>",
+        "Show current TEME position and velocity",
+    )
+    table.add_row(
+        "info <CATNR>",
+        "Show satellite catalog information",
+    )
+    table.add_row(
+        "search <name>",
+        "Search for a satellite by name",
+    )
+    table.add_row(
+        "distance <CATNR1> <CATNR2>",
+        "Show distance between two satellites",
+    )
+    table.add_row(
+        "watch <CATNR>",
+        "Continuously track a satellite's position",
+    )
+    table.add_row(
+        "gtrack <CATNR> <minutes> [--csv]",
+        "Plot a ground track; optionally export CSV",
+    )
+    table.add_row(
+        "visualize <CATNR> <minutes>",
+        "Generate an interactive 3D satellite visualization",
+    )
+    table.add_row(
+        "cache info",
+        "Show all cached satellite data",
+    )
+    table.add_row(
+        "cache info <CATNR>",
+        "Show cached data for one satellite",
+    )
+    table.add_row(
+        "cache clear",
+        "Clear all cached satellite data",
+    )
+    table.add_row(
+        "cache clear <CATNR>",
+        "Clear cached data for one satellite",
+    )
+    table.add_row(
+        "tests",
+        "Run the OrbitOps test suite",
+    )
+    table.add_row(
+        "help",
+        "Show this help menu",
+    )
+
+    console.print(table)
 
 
 def generate_ground_track(omm_data: dict, times: list) -> list[tuple]:

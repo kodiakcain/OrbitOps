@@ -742,8 +742,7 @@ def test_get_distance_sats_correct_distance(
 
     captured = capsys.readouterr()
 
-    assert "5.000km" in captured.out
-
+    assert "5.000 km" in captured.out
 
 def test_get_distance_sats_prints_satellite_names(
     monkeypatch,
@@ -960,7 +959,6 @@ def test_watch_prints_stop_message(monkeypatch, capsys):
 
     assert "Press 'Ctrl+C' to stop watching." in captured.out
 
-
 def test_watch_prints_position(monkeypatch, capsys):
     sat_data = {
         "OBJECT_NAME": "ISS (ZARYA)",
@@ -997,10 +995,12 @@ def test_watch_prints_position(monkeypatch, capsys):
     captured = capsys.readouterr()
 
     assert "ISS (ZARYA)" in captured.out
-    assert "Lat: 12.3457°" in captured.out
-    assert "Lon: -76.5432°" in captured.out
-    assert "Alt: 415.68 km" in captured.out
-
+    assert "Latitude" in captured.out
+    assert "Longitude" in captured.out
+    assert "Altitude" in captured.out
+    assert "12.3457°" in captured.out
+    assert "-76.5432°" in captured.out
+    assert "415.68 km" in captured.out
 
 def test_watch_uses_catalog_number_when_name_missing(
     monkeypatch,

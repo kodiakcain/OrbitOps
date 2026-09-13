@@ -2,6 +2,7 @@ import sys
 from datetime import UTC, datetime, timedelta
 
 from rich.console import Console
+from rich.table import Table
 
 from . import api, cache, etc, propagation, visualization
 
@@ -209,30 +210,32 @@ def main() -> None:
         if command == "teme":
             position, velocity = propagation.get_teme_cartesian(sat_data)
 
-            print(f"\nTEME Cartesian State of {sat_name}")
-            print("--------------------")
+            table = Table(title=f"{sat_name.strip()} TEME Cartesian State", show_lines=True)
 
-            print("Position:")
-            print(f"  X: {position[0]:10.2f} km")
-            print(f"  Y: {position[1]:10.2f} km")
-            print(f"  Z: {position[2]:10.2f} km")
+            table.add_column("Position Component", style="green")
+            table.add_column("Position", style="cyan")
+            table.add_column("Velocity", style="magenta")
 
-            print("Velocity:")
-            print(f"  X: {velocity[0]:10.3f} km/s")
-            print(f"  Y: {velocity[1]:10.3f} km/s")
-            print(f"  Z: {velocity[2]:10.3f} km/s")
+            table.add_row("X", f"{position[0]:10.2f} km", f"{velocity[0]:10.3f} km/s")
+            table.add_row("Y", f"{position[1]:10.2f} km", f"{velocity[1]:10.3f} km/s")
+            table.add_row("Z", f"{position[2]:10.2f} km", f"{velocity[2]:10.3f} km/s")
+
+            console.print(table)
 
         if command == "position":
-            print(f"\nGeographic position of {sat_name}")
-            print("--------------------")
 
             latitude, longitude, altitude = propagation.get_geographic_position(
                 sat_data,
             )
 
-            print(f"Latitude:  {latitude:.4f}°")
-            print(f"Longitude: {longitude:.4f}°")
-            print(f"Altitude:  {altitude:.2f} km")
+            table = Table(title=f"{sat_name.strip()}'s Position", show_lines=True)
+            table.add_column("Latitude", style="cyan")
+            table.add_column("Longitude", style="magenta")
+            table.add_column("Altitude", style="green")
+
+            table.add_row(f"{latitude:.4f}°", f"{longitude:.4f}°", f"{altitude:.2f} km")
+
+            console.print(table)
 
         if command == "info":
             data = api.get_satcat_data(catalog_number)
@@ -244,8 +247,15 @@ def main() -> None:
                 )
                 return
 
+            table = Table(title=f"{sat_name.strip()} Information", show_lines=True)
+
+            table.add_column("Property", style="cyan")
+            table.add_column("Value", style="green")
+
             for key, value in data.items():
-                print(f"{key}: {value}")
+                table.add_row(str(key), str(value))
+
+            console.print(table)
 
         if command == "search":
             results = api.search_by_name(sys.argv[2])
@@ -259,8 +269,15 @@ def main() -> None:
 
             data = results[0]
 
+            table=Table(title=f"Results for Search {str(sys.argv[2]).strip()}", show_lines=True)
+
+            table.add_column("Property", style="cyan")
+            table.add_column("Value", style="green")
+
             for key, value in data.items():
-                print(f"{key}: {value}")
+                table.add_row(str(key), str(value))
+
+            console.print(table)
 
         if command == "distance":
             try:

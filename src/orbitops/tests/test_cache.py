@@ -406,7 +406,9 @@ def test_print_cache_one_file(tmp_path, monkeypatch, capsys):
 
     captured = capsys.readouterr()
 
-    assert '"OBJECT_NAME": "ISS (ZARYA)"' in captured.out
+    assert "CATNR 25544 Cache" in captured.out
+    assert "OBJECT_NAME" in captured.out
+    assert "ISS (ZARYA)" in captured.out
 
 
 def test_print_cache_multiple_files(tmp_path, monkeypatch, capsys):
@@ -422,8 +424,11 @@ def test_print_cache_multiple_files(tmp_path, monkeypatch, capsys):
 
     captured = capsys.readouterr()
 
-    assert '"OBJECT_NAME": "ISS (ZARYA)"' in captured.out
-    assert '"OBJECT_NAME": "TEST SATELLITE"' in captured.out
+    assert "CATNR 25544 Cache" in captured.out
+    assert "CATNR 123456 Cache" in captured.out
+    assert "OBJECT_NAME" in captured.out
+    assert "ISS (ZARYA)" in captured.out
+    assert "TEST SATELLITE" in captured.out
 
 
 def test_print_cache_empty(tmp_path, monkeypatch, capsys):
@@ -483,7 +488,9 @@ def test_print_cache_specific_existing(tmp_path, monkeypatch, capsys):
 
     captured = capsys.readouterr()
 
-    assert '"OBJECT_NAME": "ISS (ZARYA)"' in captured.out
+    assert "CATNR 25544 Cache" in captured.out
+    assert "OBJECT_NAME" in captured.out
+    assert "ISS (ZARYA)" in captured.out
 
 
 def test_print_cache_specific_success_message(tmp_path, monkeypatch, capsys):
@@ -536,5 +543,8 @@ def test_print_cache_specific_only_prints_requested(
 
     captured = capsys.readouterr()
 
-    assert '"OBJECT_NAME": "ISS (ZARYA)"' in captured.out
-    assert '"OBJECT_NAME": "OTHER SATELLITE"' not in captured.out
+    assert "CATNR 25544 Cache" in captured.out
+    assert "OBJECT_NAME" in captured.out
+    assert "ISS (ZARYA)" in captured.out
+    assert "OTHER SATELLITE" not in captured.out
+    assert "CATNR 123456 Cache" not in captured.out
