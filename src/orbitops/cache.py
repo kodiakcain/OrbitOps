@@ -5,6 +5,7 @@ from pathlib import Path
 from platformdirs import user_cache_path
 from rich.console import Console
 from rich.table import Table
+from rich.tree import Tree
 
 CACHE_DIR: Path = user_cache_path("OrbitOps", ensure_exists=True)
 CACHE_LIFETIME = timedelta(hours=2)
@@ -247,3 +248,28 @@ def print_cache_specific(catalog_number: int) -> None:
     else:
 
         console.print("[bold red]CATNR not in cache.[/bold red]")
+
+def print_cache_tree() -> None:
+
+    tree = Tree("[bold]OrbitOps Cache[/bold]")
+    file_count = 0
+
+    for file in CACHE_DIR.glob("*.json"):
+
+        if file.is_file():
+
+            file_count += 1
+
+            with open(file, "r", encoding="utf-8") as cache_file:
+                data = json.load(cache_file)
+
+            tree.add(
+                f"[cyan]{file.stem}[/cyan] — "
+                f"[green]{data.get('OBJECT_NAME', 'Unknown')}[/green]"
+            )
+
+    if file_count == 0:
+        console.print("[yellow]Cache is empty.[/yellow]")
+        return
+
+    console.print(tree)

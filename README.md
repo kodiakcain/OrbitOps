@@ -339,6 +339,12 @@ The spacecraft positions shown in the visualization are propagated from CelesTra
 
 OrbitOps locally caches downloaded CelesTrak OMM data for up to two hours to reduce unnecessary repeated requests.
 
+View all cached satellites:
+
+```bash
+orbitops cache list
+```
+
 View all cached orbital data:
 
 ```bash

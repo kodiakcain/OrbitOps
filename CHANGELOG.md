@@ -2,6 +2,12 @@
 
 All notable changes to OrbitOps will be documented in this file.
 
+## [0.2.10] - 2026-09-13
+
+### Added
+
+- Added Rich tree for cache to get a quick view of all satellites in the cache
+
 ## [0.2.9] - 2026-09-13
 
 ### Added

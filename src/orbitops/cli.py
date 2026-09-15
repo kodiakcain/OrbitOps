@@ -56,11 +56,17 @@ def main() -> None:
 
                 return
 
-            if sys.argv[2] not in ["info", "clear"]:
+            if sys.argv[2] not in ["info", "clear", "list"]:
 
                 console.print(f"[bold red]{sys.argv[2]} is an invalid cache command.[/bold red]")
 
                 return
+
+            if str(sys.argv[2]) == "list" and len(sys.argv) == 3:
+            
+                    cache.print_cache_tree()
+    
+                    return
 
             if str(sys.argv[2]) == "info" and len(sys.argv) == 3:
 

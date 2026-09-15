@@ -55,6 +55,10 @@ def print_help_menu() -> None:
         "Generate an interactive 3D satellite visualization",
     )
     table.add_row(
+        "cache list",
+        "Show all currently cached satellites",
+    )
+    table.add_row(
         "cache info",
         "Show all cached satellite data",
     )
